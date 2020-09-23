@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { MemoryRouter as Router, Route } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider'
 import Auth from './Auth'
 import Verify from './Verify'
