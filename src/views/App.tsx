@@ -1,17 +1,17 @@
-import React from 'react'
-import { Box, Button, Heading, Text } from 'rimble-ui'
+import React, { useContext } from 'react'
+import { MemoryRouter as Router, Route } from 'react-router-dom'
+import { AuthContext } from '../providers/AuthProvider'
+import Auth from './Auth'
+import Verify from './Verify'
 
-function App() {
+export const App: React.FC<{}> = ({}) => {
+  const { token, tenantId } = useContext(AuthContext)
+
   return (
-    <Box
-      display={'flex'}
-      flex={1}
-      flexDirection={'column'}
-      alignItems={'center'}
-    >
-      <Heading as="H1">Welcome</Heading>
-      <Text>SSI Wallet for Trust Agency</Text>
-    </Box>
+    <Router>
+      <Route path={'/'} component={Auth} exact />
+      <Route path={'/verify'} component={Verify} />
+    </Router>
   )
 }
 
