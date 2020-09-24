@@ -1,10 +1,10 @@
 const ENV = {
   BASE: 'https://alpha.consensysidentity.com',
-  VERSION: 'v1',
-  TENANT: 'tenant',
-  FEEDS: 'feeds',
-  SCHEMAS: 'schemas',
-  AGENT: 'agent/',
+  VERSION: '/v1',
+  TENANT: '/tenant',
+  FEEDS: '/feeds',
+  SCHEMAS: '/schemas',
+  AGENT: '/agent/',
 }
 
 const ENDPOINTS = {

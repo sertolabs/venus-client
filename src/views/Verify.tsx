@@ -5,15 +5,22 @@ import { AuthContext } from '../providers/AuthProvider'
 import { useHistory } from 'react-router-dom'
 
 const Verify: React.FC<{}> = () => {
-  const [code, setCode] = useState<string>('jason.healy+test1@consensys.net')
-  const { verifyCode } = useContext(AppContext)
-  const { token, email } = useContext(AuthContext)
+  const [code, setCode] = useState<string>('')
+  const { email } = useContext(AuthContext)
+  const { verifyCode, getUser } = useContext(AppContext)
+  const history = useHistory()
 
   const verifyEmailCode = async () => {
     if (email && code.length === 6) {
-      const user = await verifyCode(email, code)
+      const _session = await verifyCode(email, code)
 
-      console.log(user)
+      if (_session) {
+        const user = await getUser(_session.id_token)
+
+        if (user) {
+          history.push('/dashboard')
+        }
+      }
     }
   }
 
@@ -23,34 +30,29 @@ const Verify: React.FC<{}> = () => {
       flex={1}
       flexDirection={'column'}
       alignItems={'center'}
+      paddingBottom={20}
     >
-      <Heading as="h1">{token ? 'Logged in!' : 'Verify Code'}</Heading>
-      <Text>
-        {token ? 'Authenticated with access token:' : 'Enter code from email'}
-      </Text>
+      <Box height={110}></Box>
+      <Heading as="h1">
+        <b>Almost there!</b>
+      </Heading>
+      <Box padding={15}>
+        <Text as={'p'}>Check your email for a code and enter it here</Text>
+      </Box>
 
-      {token && (
-        <Box width={400}>
-          <Text>User data:</Text>
-          <Text>
-            <b>access_token:</b> {token.access_token}
-          </Text>
-        </Box>
-      )}
+      <Input
+        width={300}
+        type="text"
+        required={true}
+        placeholder="Enter Code"
+        onChange={(ev: any) => setCode(ev.target.value)}
+      />
 
-      {!token && (
-        <Box flexDirection={'column'} display={'flex'} alignItems={'center'}>
-          <Input
-            type="text"
-            required={true}
-            placeholder="OTP Code"
-            onChange={(ev: any) => setCode(ev.target.value)}
-          />
-          <Box marginTop={10} alignItems={'center'}>
-            <Button onClick={() => verifyEmailCode()}>verifyEmailCode</Button>
-          </Box>
-        </Box>
-      )}
+      <Box marginTop={30}>
+        <Button width={250} onClick={() => verifyEmailCode()}>
+          VERIFY CODE
+        </Button>
+      </Box>
     </Box>
   )
 }

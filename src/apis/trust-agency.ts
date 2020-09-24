@@ -1,3 +1,0 @@
-const doTrust = () => {}
-
-export { doTrust }

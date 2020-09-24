@@ -6,12 +6,12 @@ export const AuthContext = createContext({} as AuthState)
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [email, setEmail] = useState<string>('jason.healy+test1@consensys.net')
-  const [token, setToken] = useState<Auth0Session | undefined>()
+  const [session, setSession] = useState<Auth0Session | undefined>()
   const [tenantId, setTenantId] = useState<string>()
 
   return (
     <AuthContext.Provider
-      value={{ token, tenantId, email, setEmail, setToken, setTenantId }}
+      value={{ session, tenantId, email, setEmail, setSession, setTenantId }}
     >
       {children}
     </AuthContext.Provider>
