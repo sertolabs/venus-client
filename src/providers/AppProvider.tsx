@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from 'react'
-import { Auth, Agent } from '../apis'
+import { Auth, Agency as sdk } from '../apis'
 import { AuthContext } from './AuthProvider'
 import { AppState } from '../types'
+import { ENDPOINTS } from '../env'
 
 /**
  * Global app state context
@@ -9,7 +10,7 @@ import { AppState } from '../types'
 export const AppContext = createContext({} as AppState)
 
 const AppProvider: React.FC<{}> = ({ children }) => {
-  const { token, tenantId, setToken, setTenantId } = useContext(AuthContext)
+  const { session, tenantId, setSession, setTenantId } = useContext(AuthContext)
 
   const sendCode = async (email: string) => {
     const ep = `https://dev-mdazdke4.us.auth0.com/passwordless/start`
@@ -18,13 +19,33 @@ const AppProvider: React.FC<{}> = ({ children }) => {
 
   const verifyCode = async (email: string, code: string) => {
     const ep = 'https://dev-mdazdke4.us.auth0.com/oauth/token'
-    const _token = await Auth.verifyCode(ep, email, code)
-    setToken(_token)
-    return _token
+    const newSession = await Auth.verifyCode(ep, email, code)
+    setSession(newSession)
+    return newSession
+  }
+
+  const createUser = async () => {
+    const ep = `${ENDPOINTS.VERSION}/users/signup`
+    return session && (await sdk.createUser(ep, session.id_token))
+  }
+
+  const getUser = async (idToken: string) => {
+    const ep = `${ENDPOINTS.VERSION}/users/currentUser`
+    try {
+      const user = idToken && (await sdk.getUser(ep, idToken))
+      setTenantId(user.tenants[0].tenantId)
+      return user
+    } catch (error) {
+      if (error.status === 500) {
+        const newUser = await createUser()
+        setTenantId(newUser.tenants[0].tenantId)
+        return newUser
+      }
+    }
   }
 
   return (
-    <AppContext.Provider value={{ sendCode, verifyCode }}>
+    <AppContext.Provider value={{ sendCode, verifyCode, getUser }}>
       {children}
     </AppContext.Provider>
   )

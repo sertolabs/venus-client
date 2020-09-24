@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react'
-import { Box, Heading, Text, Button } from 'rimble-ui'
+import { Box, Heading, Text, Button, Input } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
 import { AuthContext } from '../providers/AuthProvider'
 import { useHistory } from 'react-router-dom'
 
 const Auth: React.FC<{}> = () => {
   const { email, setEmail } = useContext(AuthContext)
-  const { sendCode, verifyCode } = useContext(AppContext)
+  const { sendCode } = useContext(AppContext)
   const history = useHistory()
 
   const sendEmailCode = async (email: string) => {
@@ -24,13 +24,32 @@ const Auth: React.FC<{}> = () => {
       flex={1}
       flexDirection={'column'}
       alignItems={'center'}
+      paddingBottom={20}
     >
-      <Heading as="h1">Login</Heading>
-      <Text>Enter your email</Text>
+      <Box height={110}></Box>
+      <Heading as="h1">
+        <b>Welcome!</b>
+      </Heading>
+      <Box padding={15}>
+        <Text as={'p'}>
+          Enter your email address to get a one time passcode
+        </Text>
+      </Box>
 
-      <Button onClick={() => email && sendEmailCode(email)}>
-        sendEmailCode
-      </Button>
+      <Input
+        width={300}
+        type="text"
+        required={true}
+        defaultValue={email}
+        placeholder="Email Address"
+        onChange={(ev: any) => setEmail(ev.target.value)}
+      />
+
+      <Box marginTop={30}>
+        <Button width={250} onClick={() => email && sendEmailCode(email)}>
+          SEND CODE
+        </Button>
+      </Box>
     </Box>
   )
 }
