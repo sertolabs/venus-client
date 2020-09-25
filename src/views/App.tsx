@@ -6,6 +6,7 @@ import Verify from './Verify'
 import Header from '../components/Header'
 import Page from '../components/Page'
 import Dashboard from './Dashboard'
+// import Debug from './Debug'
 
 export const App: React.FC<{}> = ({}) => {
   const { session, tenantId } = useContext(AuthContext)
