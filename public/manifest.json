@@ -24,7 +24,10 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["activeTab", "storage"],
+  "externally_connectable": {
+    "matches": ["<all_urls>"]
+  },
+  "permissions": ["activeTab", "storage", "tabs", "notifications"],
   "content_security_policy": "script-src 'self' 'unsafe-inline'; object-src 'self'",
   "web_accessible_resources": ["index.html", "/static/*"]
 }

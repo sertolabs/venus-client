@@ -1,33 +1,19 @@
 /* global chrome */
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
-  // main()
+  // Do stuff
 })
-
-function main() {
-  // eslint-disable-next-line no-undef
-  const extensionOrigin = 'chrome-extension://' + chrome.runtime.id
-  // eslint-disable-next-line no-restricted-globals
-  if (!location.ancestorOrigins.contains(extensionOrigin)) {
-    // Fetch the local React index.html page
-    // eslint-disable-next-line no-undef
-    fetch(chrome.runtime.getURL('index.html') /*, options */)
-      .then((response) => response.text())
-      .then((html) => {
-        const page = html.replace(/\/static\//g, `${extensionOrigin}/static/`)
-        // eslint-disable-next-line no-undef
-        //
-        console.log(html, page)
-      })
-      .catch((error) => {
-        console.warn(error)
-      })
-  }
-}
 
 window.addEventListener('message', function (event) {
   if (event.source !== window) return
-  onDidReceiveMessage(event)
+  // onDidReceiveMessage(event)
+  var message = event.data
+
+  if (message.type === 'AUTH') {
+    chrome.runtime.sendMessage(message, (respone) => {
+      console.log('RESP', respone)
+    })
+  }
 })
 
 async function onDidReceiveMessage(event) {

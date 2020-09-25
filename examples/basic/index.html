@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1 user-scalable=no"
+    />
+    <title>Example 1</title>
+  </head>
+  <body>
+    <input type="button" onclick="showExtension()" value="Display" />
+  </body>
+
+  <script>
+    /**
+     * Add your Auth0 details here to authentciate the extension from outside
+     * This currently uses `postMessage` which any extension can listen to.
+     *
+     * To fix this; An API from the extension would need to be injected on the page so we
+     * can be sure we are sending messages to the wallet only.
+     *
+     * if(window.myExtensionApi) {
+     *    walletExtensionApi.authenticate({...})
+     *    walletExtensionApi.signCredential({...})
+     *    walletExtensionApi.requestCredentials({...})
+     * }
+     *
+     * */
+    function showExtension() {
+      window.postMessage({
+        type: 'AUTH',
+        session: {
+          access_token: '',
+          expires_in: 86400,
+          id_token: '',
+          scope: '',
+          token_type: 'Bearer',
+        },
+        tenantId: '',
+      })
+    }
+  </script>
+</html>

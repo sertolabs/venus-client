@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Heading, Text, Button } from 'rimble-ui'
 import storage from '../utils/storage'
 
@@ -11,6 +11,12 @@ const Debug: React.FC<{}> = () => {
     const store = await storage.getItem('session')
     console.log('Store', store)
   }
+
+  // useEffect(() => {
+  //   chrome.runtime.onMessage.addListener(function (request) {
+  //     console.log(request)
+  //   })
+  // }, [])
 
   return (
     <Box
