@@ -24,7 +24,7 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "storage"],
   "content_security_policy": "script-src 'self' 'unsafe-inline'; object-src 'self'",
   "web_accessible_resources": ["index.html", "/static/*"]
 }
