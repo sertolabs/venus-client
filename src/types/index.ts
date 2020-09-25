@@ -21,4 +21,5 @@ export interface AuthState {
   setEmail: (email: string) => void
   setSession: (token: Auth0Session) => void
   setTenantId: (id: string) => void
+  clearSession: () => void
 }

@@ -11,23 +11,49 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [tenantId, saveTenantId] = useState<string>()
 
   const setSession = (session: Auth0Session) => {
-    storage.saveItem('@session', session)
+    storage.saveItem('session', session)
     saveSession(session)
   }
 
   const setTenantId = (tenantId: string) => {
-    storage.saveItem('@tenantId', tenantId)
+    storage.saveItem('tenantId', tenantId)
     saveTenantId(tenantId)
   }
 
-  // const getSessionFromStorage = () => {}
-  // const getTenantIdFromStorage = () => {}
+  const getSessionFromStorage = async () => {
+    const session: any = await storage.getItem('session')
+    if (session) {
+      setSession(session)
+    }
+  }
 
-  useEffect(() => {}, [])
+  const getTenantIdFromStorage = async () => {
+    const tenantId: any = await storage.getItem('tenantId')
+    if (tenantId) {
+      setTenantId(tenantId)
+    }
+  }
+
+  const clearStorage = () => {
+    storage.clear()
+  }
+
+  useEffect(() => {
+    getSessionFromStorage()
+    getTenantIdFromStorage()
+  }, [])
 
   return (
     <AuthContext.Provider
-      value={{ session, tenantId, email, setEmail, setSession, setTenantId }}
+      value={{
+        session,
+        tenantId,
+        email,
+        setEmail,
+        setSession,
+        setTenantId,
+        clearSession: clearStorage,
+      }}
     >
       {children}
     </AuthContext.Provider>

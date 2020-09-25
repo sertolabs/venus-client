@@ -33,12 +33,12 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     const ep = `${ENDPOINTS.VERSION}/users/currentUser`
     try {
       const user = idToken && (await sdk.getUser(ep, idToken))
-      setTenantId(user.tenants[0].tenantId)
+      setTenantId(user.tenants[0].Tenant_id)
       return user
     } catch (error) {
       if (error.status === 500) {
         const newUser = await createUser()
-        setTenantId(newUser.tenants[0].tenantId)
+        setTenantId(newUser.tenants[0].Tenant_id)
         return newUser
       }
     }
