@@ -27,6 +27,13 @@ const storage = {
       }
     })
   },
+  clear: () => {
+    if (isChromeRuntime()) {
+      chrome.storage.local.clear()
+    } else {
+      localStorage.clear()
+    }
+  },
 }
 
 export default storage
