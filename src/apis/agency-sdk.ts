@@ -23,6 +23,20 @@ const identityManagerGetIdentities = async (
   token: string,
   tenantId: string,
 ) => {
+  return await request(endpoint + '/identityManagerGetIdentities', {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+  })
+}
+
+const identityManagerGetOrCreateIdentity = async (
+  endpoint: string,
+  token: string,
+  tenantId: string,
+) => {
   return await request(endpoint, {
     method: 'POST',
     headers: {
@@ -32,4 +46,9 @@ const identityManagerGetIdentities = async (
   })
 }
 
-export { getUser, createUser, identityManagerGetIdentities }
+export {
+  getUser,
+  createUser,
+  identityManagerGetIdentities,
+  identityManagerGetOrCreateIdentity,
+}

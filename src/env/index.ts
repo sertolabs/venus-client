@@ -4,7 +4,7 @@ const ENV = {
   TENANT: '/tenant',
   FEEDS: '/feeds',
   SCHEMAS: '/schemas',
-  AGENT: '/agent/',
+  AGENT: '/agent',
 }
 
 const ENDPOINTS = {
