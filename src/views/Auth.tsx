@@ -47,7 +47,7 @@ const Auth: React.FC<{}> = () => {
 
       <Box marginTop={30}>
         <Button width={250} onClick={() => email && sendEmailCode(email)}>
-          APPROVE
+          LOGIN
         </Button>
       </Box>
     </Box>
