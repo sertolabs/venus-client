@@ -9,6 +9,17 @@ window.idWallet = {
       type: 'AUTH_REQUEST',
       payload: { session, tenantId },
     })
+    return new Promise((resolve, reject) => {
+      window.addEventListener('message', (event) => {
+        if (event.data.type === 'AUTH_RESPONSE') {
+          if (event.data.payload.status === 'SUCCESS') {
+            resolve(event.data)
+          } else {
+            reject(event.data)
+          }
+        }
+      })
+    })
   },
   connect: async () => {
     window.postMessage({
