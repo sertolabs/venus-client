@@ -8,36 +8,43 @@
     <title>Example 1</title>
   </head>
   <body>
-    <input type="button" onclick="showExtension()" value="Display" />
+    <input type="button" onclick="auth()" value="Authenticate" />
+
+    <input type="button" onclick="connectToWallet()" value="Connect" />
+
+    <div id="content"></div>
   </body>
 
   <script>
+    function auth() {
+      const session = {
+        id_token:
+          'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpzYUN5VVBXTGhLXzhjNHdHXzhvUSJ9.eyJuaWNrbmFtZSI6Imphc29uLmhlYWx5K3Rlc3QxIiwibmFtZSI6Imphc29uLmhlYWx5K3Rlc3QxQGNvbnNlbnN5cy5uZXQiLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvYWVjMjU2YjI5ZmEzMDVlMWNmZTZhZWJkMTQ3ZWIyMjQ_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZqYS5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyMC0wOS0yOFQyMToxNTo0MC44ODJaIiwiZW1haWwiOiJqYXNvbi5oZWFseSt0ZXN0MUBjb25zZW5zeXMubmV0IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vZGV2LW1kYXpka2U0LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJlbWFpbHw1ZjE5YjFhNmJlMDNkMjRkYzk5OWI1YzkiLCJhdWQiOiJzQW56ZXRsTnMwSGJ5b2tPbmNhVFVabUxSaWpQYXpCYyIsImlhdCI6MTYwMTMyNzc0MCwiZXhwIjoxNjA0OTI3NzQwfQ.iKUSWB3oL6PIPGaw3VkTRgh8IoARDKBSXgXGMGbUJZy_Sz6rBBzoz9OHIsW61yeLOo8uB7-9L1pZzAQz1nwNPcRbnDZslt7Oj_SYhyJdrPE1QFneVKvzztRt5E8eV98Oi49osUzaJu7W4teLqLNBKjV7-tBBhWsar2TzAaRClL_QCYlgNXym9QjlT9QDiIQNU0H3zUncsRcga9FJZ0y7WuUrZMj_EUae2W2mJDFHX5tCo_AAOvKnQBHFPPkhvPMRRDGl6rXeoZakyRxv363J7_Rfq1Y-uoPZnGWyF4swGY1lqcUg8PemSJp4v7doV2mHgQmkcJ7Fdxq5KYWMDVtcXQ',
+      }
+      const tenantId = '1c072c7b-a03b-4baf-9431-c24ea4a52f9c'
+
+      if (window.idWallet) {
+        const auth = idWallet.authenticate(session, tenantId)
+      }
+    }
+
     /**
-     * Add your Auth0 details here to authentciate the extension from outside
-     * This currently uses `postMessage` which any extension can listen to.
-     *
-     * To fix this; An API from the extension would need to be injected on the page so we
-     * can be sure we are sending messages to the wallet only.
-     *
-     * if(window.myExtensionApi) {
-     *    walletExtensionApi.authenticate({...})
-     *    walletExtensionApi.signCredential({...})
-     *    walletExtensionApi.requestCredentials({...})
-     * }
      *
      * */
-    function showExtension() {
-      window.postMessage({
-        type: 'AUTH',
-        session: {
-          access_token: '',
-          expires_in: 86400,
-          id_token: '',
-          scope: '',
-          token_type: 'Bearer',
-        },
-        tenantId: '',
-      })
+    async function connectToWallet() {
+      if (window.idWallet) {
+        try {
+          document.getElementById('content').textContent = 'Waiting for DID...'
+          const identity = await idWallet.connect()
+          if (identity) {
+            console.log(identity)
+            document.getElementById('content').textContent =
+              identity.payload.did
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
     }
   </script>
 </html>

@@ -1,26 +1,53 @@
 /* global chrome */
 
-chrome.runtime.onMessage.addListener(function (request, sender, callback) {
-  // Do stuff
-})
+const src = chrome.runtime.getURL('page-api.js')
+
+injectScript(src)
+
+function injectScript(content) {
+  try {
+    const container = document.head || document.documentElement
+    const scriptTag = document.createElement('script')
+    scriptTag.setAttribute('async', 'true')
+    scriptTag.src = content
+    container.insertBefore(scriptTag, container.children[0])
+  } catch (e) {
+    console.error('Script injection failed.', e)
+  }
+}
 
 window.addEventListener('message', function (event) {
-  if (event.source !== window) return
-  // onDidReceiveMessage(event)
+  if (event.source !== window || event.data.source !== 'TRUST_AGENT_ID_WALLET')
+    return
   var message = event.data
 
-  if (message.type === 'AUTH') {
-    chrome.runtime.sendMessage(message, (respone) => {
-      console.log('RESP', respone)
+  if (message.type === 'CONNECT_REQUEST') {
+    console.log('> sending CONNECT_REQUEST message to background', message)
+    chrome.runtime.sendMessage(message)
+  }
+
+  if (message.type === 'AUTH_REQUEST') {
+    console.log('> sending AUTH_REQUEST message to background', message)
+    chrome.runtime.sendMessage(message)
+  }
+})
+
+chrome.runtime.onMessage.addListener((message) => {
+  console.log('> message content', message)
+
+  if (message.type === 'REQUEST_APPROVAL') {
+    window.postMessage({
+      source: 'TRUST_AGENT_ID_WALLET',
+      type: 'REQUEST_APPROVAL',
+      payload: message.payload,
+    })
+  }
+
+  if (message.type === 'AUTH_ACCEPTED') {
+    window.postMessage({
+      source: 'TRUST_AGENT_ID_WALLET',
+      type: 'AUTH_ACCEPTED',
+      payload: message.payload,
     })
   }
 })
-
-async function onDidReceiveMessage(event) {
-  if (event.data.type && event.data.type === 'GET_EXTENSION_ID') {
-    window.postMessage(
-      { type: 'EXTENSION_ID_RESULT', extensionId: chrome.runtime.id },
-      '*',
-    )
-  }
-}

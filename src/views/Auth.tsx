@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, Heading, Text, Button, Input } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
 import { AuthContext } from '../providers/AuthProvider'
@@ -47,7 +47,7 @@ const Auth: React.FC<{}> = () => {
 
       <Box marginTop={30}>
         <Button width={250} onClick={() => email && sendEmailCode(email)}>
-          SEND CODE
+          APPROVE
         </Button>
       </Box>
     </Box>

@@ -10,6 +10,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, saveSession] = useState<Auth0Session | undefined>()
   const [tenantId, saveTenantId] = useState<string>()
 
+  console.log(session, tenantId)
+
   const setSession = (session: Auth0Session) => {
     storage.saveItem('session', session)
     saveSession(session)
