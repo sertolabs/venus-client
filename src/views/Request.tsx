@@ -1,11 +1,13 @@
 import React, { useContext } from 'react'
 import { Box, Heading, Text, Button } from 'rimble-ui'
 import { RequestContext } from '../providers/RequestProvider'
+import { AppContext } from '../providers/AppProvider'
 
 const Request: React.FC<{}> = () => {
   const { request, approveRequest } = useContext(RequestContext)
+  const { defaultIdentity: identity } = useContext(AppContext)
   const approve = () => {
-    approveRequest({ did: '12345678993363e7e7eueruerudue8' })
+    approveRequest({ did: identity.did })
   }
 
   return (
@@ -16,22 +18,30 @@ const Request: React.FC<{}> = () => {
       alignItems={'center'}
       paddingBottom={20}
     >
-      <Box height={110}></Box>
+      <Box height={40}></Box>
       <Heading as="h1">
         <b>Request!</b>
       </Heading>
       <Box padding={15}>
-        <Text as={'p'}>Request type: {request?.message?.type}</Text>
-        <Text as={'p'}>Requested:</Text>
+        <Text>Request type: {request?.message?.type}</Text>
+        <Text>Requested:</Text>
         {request &&
           request?.message?.payload?.request?.map((item: string) => {
-            return <Text as={'p'}>{item}</Text>
+            return <Text>{item}</Text>
           })}
+      </Box>
+      <Box padding={15}>
+        <Text as={'p'}>You are sharing your identifier with bluuurup</Text>
+        {identity && (
+          <Text as={'p'} className={'break-word'}>
+            {identity.did}
+          </Text>
+        )}
       </Box>
 
       {request?.message && (
         <Box marginTop={30}>
-          <Button width={250} onClick={approve}>
+          <Button width={250} onClick={approve} disabled={!identity}>
             SHARE DID
           </Button>
         </Box>

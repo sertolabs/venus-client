@@ -9,6 +9,9 @@ export interface Auth0Session {
 }
 
 export interface AppState {
+  user: any
+  loadingUser: boolean
+  defaultIdentity: any
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>
