@@ -3,6 +3,7 @@ import { Auth, Agency as sdk } from '../apis'
 import { AuthContext } from './AuthProvider'
 import { AppState } from '../types'
 import { ENDPOINTS } from '../env'
+import { sendAuthResponse } from '../services/extension'
 
 /**
  * Global app state context
@@ -40,6 +41,11 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       setUser(user)
       setTenantId(user.tenants[0].Tenant_id)
       setLoading(false)
+      sendAuthResponse({
+        source: 'TRUST_AGENT_ID_WALLET',
+        type: 'AUTH_RESPONSE',
+        payload: { status: 'SUCCESS', message: 'Authentication success' },
+      })
       return user
     } catch (error) {
       if (error.status === 500) {
@@ -49,6 +55,15 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         setTenantId(newUser.tenants[0].Tenant_id)
         setLoading(false)
         return newUser
+      }
+
+      if (error.status === 401) {
+        setLoading(false)
+        sendAuthResponse({
+          source: 'TRUST_AGENT_ID_WALLET',
+          type: 'AUTH_RESPONSE',
+          payload: { status: 'ERROR', message: 'Authentication error' },
+        })
       }
     }
   }

@@ -43,10 +43,10 @@ chrome.runtime.onMessage.addListener((message) => {
     })
   }
 
-  if (message.type === 'AUTH_ACCEPTED') {
+  if (message.type === 'AUTH_RESPONSE') {
     window.postMessage({
       source: 'TRUST_AGENT_ID_WALLET',
-      type: 'AUTH_ACCEPTED',
+      type: 'AUTH_RESPONSE',
       payload: message.payload,
     })
   }

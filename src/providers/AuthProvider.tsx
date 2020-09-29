@@ -6,7 +6,7 @@ import storage from '../utils/storage'
 export const AuthContext = createContext({} as AuthState)
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [email, setEmail] = useState<string>('jason.healy+test1@consensys.net')
+  const [email, setEmail] = useState<string>()
   const [session, saveSession] = useState<Auth0Session | undefined>()
   const [tenantId, saveTenantId] = useState<string>()
 
