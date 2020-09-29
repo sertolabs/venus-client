@@ -23,3 +23,15 @@ export interface AuthState {
   setTenantId: (id: string) => void
   clearSession: () => void
 }
+
+export interface ExtensionRequest {
+  message: any
+  sender: any
+  requestWindow: any
+}
+
+export interface RequestState {
+  request: ExtensionRequest | null
+  clearRequest: () => void
+  approveRequest: (payload: any) => void
+}

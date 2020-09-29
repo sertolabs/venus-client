@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { Auth, Agency as sdk } from '../apis'
 import { AuthContext } from './AuthProvider'
 import { AppState } from '../types'
@@ -11,6 +11,7 @@ export const AppContext = createContext({} as AppState)
 
 const AppProvider: React.FC<{}> = ({ children }) => {
   const { session, tenantId, setSession, setTenantId } = useContext(AuthContext)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const sendCode = async (email: string) => {
     const ep = `https://dev-mdazdke4.us.auth0.com/passwordless/start`

@@ -34,6 +34,13 @@ const storage = {
       localStorage.clear()
     }
   },
+  removeItem: (key: string) => {
+    if (isChromeRuntime()) {
+      chrome.storage.local.remove(key)
+    } else {
+      localStorage.removeItem(key)
+    }
+  },
 }
 
 export default storage

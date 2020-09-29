@@ -6,23 +6,36 @@ import {
   Redirect,
 } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider'
+import { RequestContext } from '../providers/RequestProvider'
 import Auth from './Auth'
 import Verify from './Verify'
 import Header from '../components/Header'
 import Page from '../components/Page'
 import Dashboard from './Dashboard'
+import Request from './Request'
 
 export const App: React.FC<{}> = ({}) => {
   const { session, tenantId } = useContext(AuthContext)
+  const { request } = useContext(RequestContext)
+
+  console.log('> request', request)
+
+  // Not really but it will do for now
+  const isLoggedIn = session && tenantId
+
+  // Not really but it will do for now
+  const hasRequest = isLoggedIn && request
 
   return (
     <>
       <Header />
       <Page>
         <Router>
-          {session && tenantId && <Redirect to={'/dashboard'} />}
+          {hasRequest && <Redirect to={'/request'} />}
+          {isLoggedIn && !request && <Redirect to={'/dashboard'} />}
           <Route path={'/'} component={Auth} exact />
           <Route path={'/verify'} component={Verify} />
+          <Route path={'/request'} component={Request} />
           <Route path={'/dashboard'} component={Dashboard} />
         </Router>
       </Page>
