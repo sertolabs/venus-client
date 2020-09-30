@@ -46,9 +46,65 @@ const identityManagerGetOrCreateIdentity = async (
   })
 }
 
+const createVerifiableCredential = async (
+  endpoint: string,
+  createCredential: {
+    issuer: { id: string }
+    subject: string
+    claims: any
+  },
+  token: string,
+  tenantId: string,
+) => {
+  const credential = {
+    credential: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiableCredential'],
+      issuer: createCredential.issuer,
+      issuanceDate: new Date().toISOString(),
+      credentialSubject: {
+        id: createCredential.subject,
+        ...createCredential.claims,
+      },
+    },
+    save: true,
+  }
+
+  return await request(endpoint + '/createVerifiableCredential', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify(credential),
+  })
+}
+
+const dataStoreORMGetVerifiableCredentials = async (
+  endpoint: string,
+  query: any,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/dataStoreORMGetVerifiableCredentials', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify(query),
+  })
+}
+
 export {
   getUser,
   createUser,
   identityManagerGetIdentities,
   identityManagerGetOrCreateIdentity,
+  createVerifiableCredential,
+  dataStoreORMGetVerifiableCredentials,
 }

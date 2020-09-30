@@ -29,12 +29,13 @@ const RequestProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
-  const approveRequest = async (payload: any) => {
+  const respond = async (payload: any) => {
     console.log('> sending message from extension')
 
     await sendTabsMessage({
+      source: 'TRUST_AGENT_ID_WALLET',
       tabId: request?.sender.tab.id,
-      type: 'REQUEST_APPROVAL',
+      type: 'CONNECT_RESPONSE',
       payload,
     })
 
@@ -46,7 +47,7 @@ const RequestProvider: React.FC<{}> = ({ children }) => {
   }, [])
 
   return (
-    <RequestContext.Provider value={{ request, approveRequest, clearRequest }}>
+    <RequestContext.Provider value={{ request, respond, clearRequest }}>
       {children}
     </RequestContext.Provider>
   )

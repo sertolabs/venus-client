@@ -15,6 +15,8 @@ export interface AppState {
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>
+  createCredential: (name: string) => Promise<any>
+  getCredentials: () => Promise<any>
 }
 
 export interface AuthState {
@@ -27,14 +29,52 @@ export interface AuthState {
   clearSession: () => void
 }
 
+export interface RequestState {
+  request: ExtensionRequest | null
+  clearRequest: () => void
+  respond: (payload: any) => void
+}
+
 export interface ExtensionRequest {
   message: any
   sender: any
   requestWindow: any
 }
 
-export interface RequestState {
-  request: ExtensionRequest | null
-  clearRequest: () => void
-  approveRequest: (payload: any) => void
+export enum Source {
+  TRUST_AGENT_ID_WALLET,
+}
+
+export enum MessageType {
+  AUTH_REQUEST,
+  AUTH_RESPONSE,
+  CONNNECT_REQUEST,
+  CONNECT_RESPONSE,
+  DISCLOSURE_REQUEST,
+  DISCLOSURE_RESPONSE,
+}
+
+export enum MessageStatus {
+  ERROR,
+  SUCCESS,
+}
+
+export interface MessagePayload {
+  status: 'ERROR' | 'SUCCESS'
+  message: string
+  action?: 'ACCEPT' | 'REJECT'
+  data?: any
+}
+
+export interface ExtMessage {
+  tabId?: number
+  source: 'TRUST_AGENT_ID_WALLET'
+  type:
+    | 'AUTH_REQUEST'
+    | 'AUTH_RESPONSE'
+    | 'CONNECT_REQUEST'
+    | 'CONNECT_RESPONSE'
+    | 'DISCLOSURE_REQUEST'
+    | 'DISCLOSURE_RESPONSE'
+  payload: MessagePayload
 }

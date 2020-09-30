@@ -29,8 +29,12 @@ window.idWallet = {
     })
     return new Promise((resolve, reject) => {
       window.addEventListener('message', (event) => {
-        if (event.data.type === 'REQUEST_APPROVAL') {
-          resolve(event.data)
+        if (event.data.type === 'CONNECT_RESPONSE') {
+          if (event.data.payload.action === 'APPROVE') {
+            resolve(event.data)
+          } else {
+            reject(event.data)
+          }
         }
       })
     })

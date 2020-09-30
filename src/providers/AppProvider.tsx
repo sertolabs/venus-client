@@ -14,7 +14,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   const { session, tenantId, setSession, setTenantId } = useContext(AuthContext)
   const [user, setUser] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [defaultIdentity, setDefaultIdentity] = useState()
+  const [defaultIdentity, setDefaultIdentity] = useState<any>()
 
   const sendCode = async (email: string) => {
     const ep = `https://dev-mdazdke4.us.auth0.com/passwordless/start`
@@ -82,6 +82,40 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
+  const createCredential = async (name: string) => {
+    if (session && tenantId && defaultIdentity) {
+      return await sdk.createVerifiableCredential(
+        ENDPOINTS.AGENT,
+        {
+          issuer: { id: defaultIdentity.did },
+          subject: defaultIdentity.did,
+          claims: { name },
+        },
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
+  const getCredentials = async () => {
+    if (session && tenantId && defaultIdentity) {
+      return await sdk.dataStoreORMGetVerifiableCredentials(
+        ENDPOINTS.AGENT,
+        {
+          where: [
+            {
+              column: 'subject',
+              value: [defaultIdentity.did],
+            },
+          ],
+          order: [{ column: 'issuanceDate', direction: 'DESC' }],
+        },
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
   useEffect(() => {
     if (session) {
       getUser(session.id_token)
@@ -103,6 +137,8 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         sendCode,
         verifyCode,
         getUser,
+        createCredential,
+        getCredentials,
       }}
     >
       {children}

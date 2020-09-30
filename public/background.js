@@ -4,20 +4,37 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.sendMessage(tab.id, { message: 'load' })
 })
 
+// @TODO When a window is closed, check if it matches the window in the current request and reject it if matches
+// Eventually we could have a request queue
+chrome.windows.onRemoved.addListener(() => {
+  chrome.runtime.sendMessage({ type: 'WINDOW_CLOSED' })
+})
+
 chrome.runtime.onMessage.addListener((message, sender, response) => {
+  console.log('> message from background', message.type)
+
   if (message.type === 'CONNECT_REQUEST') {
+    // Set the message and sender, it will override previous
     chrome.storage.local.set({ message, sender })
-    chrome.windows.create(
-      {
-        url: 'index.html',
-        type: 'popup',
-        width: 380,
-        height: 600,
-      },
-      (newWindow) => {
-        chrome.storage.local.set({ requestWindow: newWindow })
-      },
-    )
+
+    // Try to reuse the same popup as before
+    chrome.storage.local.get('requestWindow', (store) => {
+      if (store.requestWindow) {
+        chrome.windows.update(store.requestWindow.id)
+      } else {
+        chrome.windows.create(
+          {
+            url: 'index.html',
+            type: 'popup',
+            width: 380,
+            height: 600,
+          },
+          (newWindow) => {
+            chrome.storage.local.set({ requestWindow: newWindow })
+          },
+        )
+      }
+    })
   }
 
   if (message.type === 'AUTH_REQUEST') {

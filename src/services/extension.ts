@@ -1,12 +1,15 @@
-const sendTabsMessage = async (message: any) => {
+import { ExtMessage } from '../types'
+
+const sendTabsMessage = async (message: ExtMessage) => {
   return new Promise((resolve) => {
-    chrome.tabs.sendMessage(message.tabId, message, () => {
-      return resolve()
-    })
+    message.tabId &&
+      chrome.tabs.sendMessage(message.tabId, message, () => {
+        return resolve()
+      })
   })
 }
 
-const sendAuthResponse = async (message: any) => {
+const sendAuthResponse = async (message: ExtMessage) => {
   return new Promise((resolve) => {
     chrome.tabs.query(
       {

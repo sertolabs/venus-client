@@ -4,10 +4,14 @@ import { RequestContext } from '../providers/RequestProvider'
 import { AppContext } from '../providers/AppProvider'
 
 const Request: React.FC<{}> = () => {
-  const { request, approveRequest } = useContext(RequestContext)
+  const { request, respond } = useContext(RequestContext)
   const { defaultIdentity: identity } = useContext(AppContext)
   const approve = () => {
-    approveRequest({ did: identity.did })
+    respond({ did: identity.did, action: 'APPROVE' })
+  }
+
+  const reject = () => {
+    respond({ action: 'REJECT' })
   }
 
   return (
@@ -40,9 +44,22 @@ const Request: React.FC<{}> = () => {
       </Box>
 
       {request?.message && (
-        <Box marginTop={30}>
-          <Button width={250} onClick={approve} disabled={!identity}>
+        <Box
+          marginTop={30}
+          alignItems={'center'}
+          display={'flex'}
+          flexDirection={'column'}
+        >
+          <Button
+            width={250}
+            marginBottom={'10'}
+            onClick={approve}
+            disabled={!identity}
+          >
             SHARE DID
+          </Button>
+          <Button warn width={250} onClick={reject} disabled={!identity}>
+            REJECT
           </Button>
         </Box>
       )}
