@@ -37,7 +37,8 @@ async function connectToWallet() {
         document.getElementById('content').textContent = identity.payload.did
       }
     } catch (err) {
-      console.log(err)
+      document.getElementById('content').textContent =
+        'Request to view DID was rejected'
     }
   }
 }

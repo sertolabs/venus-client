@@ -35,10 +35,10 @@ window.addEventListener('message', function (event) {
 chrome.runtime.onMessage.addListener((message) => {
   console.log('> message content', message)
 
-  if (message.type === 'REQUEST_APPROVAL') {
+  if (message.type === 'CONNECT_RESPONSE') {
     window.postMessage({
       source: 'TRUST_AGENT_ID_WALLET',
-      type: 'REQUEST_APPROVAL',
+      type: 'CONNECT_RESPONSE',
       payload: message.payload,
     })
   }
