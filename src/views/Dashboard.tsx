@@ -22,7 +22,7 @@ const Dashboard: React.FC<{}> = () => {
       alignItems={'center'}
       paddingBottom={20}
     >
-      <Box height={110}></Box>
+      <Box height={40}></Box>
       <Heading as="h1">
         <b>Looking good!</b>
       </Heading>

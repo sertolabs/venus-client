@@ -15,7 +15,7 @@ export interface AppState {
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>
-  createCredential: () => Promise<any>
+  createCredential: (name: string) => Promise<any>
   getCredentials: () => Promise<any>
 }
 

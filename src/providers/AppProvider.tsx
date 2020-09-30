@@ -82,14 +82,14 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
-  const createCredential = async () => {
+  const createCredential = async (name: string) => {
     if (session && tenantId && defaultIdentity) {
       return await sdk.createVerifiableCredential(
         ENDPOINTS.AGENT,
         {
           issuer: { id: defaultIdentity.did },
           subject: defaultIdentity.did,
-          claims: { name: 'Bobo' },
+          claims: { name },
         },
         session.id_token,
         tenantId,
@@ -108,6 +108,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
               value: [defaultIdentity.did],
             },
           ],
+          order: [{ column: 'issuanceDate', direction: 'DESC' }],
         },
         session.id_token,
         tenantId,

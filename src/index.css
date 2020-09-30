@@ -19,6 +19,11 @@ html {
   min-height: 500px;
 }
 
+a {
+  text-decoration: none;
+  color: #222222;
+}
+
 #root {
   overflow: hidden;
   height: 100%;
