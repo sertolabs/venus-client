@@ -26,6 +26,11 @@ window.addEventListener('message', function (event) {
     chrome.runtime.sendMessage(message)
   }
 
+  if (message.type === 'SD_REQUEST') {
+    console.log('> sending SD_REQUEST message to background', message)
+    chrome.runtime.sendMessage(message)
+  }
+
   if (message.type === 'AUTH_REQUEST') {
     console.log('> sending AUTH_REQUEST message to background', message)
     chrome.runtime.sendMessage(message)
@@ -37,6 +42,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
   if (message.type === 'CONNECT_RESPONSE') {
     window.postMessage({
+      requestId: message.requestId,
       source: 'TRUST_AGENT_ID_WALLET',
       type: 'CONNECT_RESPONSE',
       payload: message.payload,

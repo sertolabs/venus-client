@@ -33,6 +33,7 @@ const RequestProvider: React.FC<{}> = ({ children }) => {
     console.log('> sending message from extension')
 
     await sendTabsMessage({
+      requestId: request?.message.requestId,
       source: 'TRUST_AGENT_ID_WALLET',
       tabId: request?.sender.tab.id,
       type: 'CONNECT_RESPONSE',

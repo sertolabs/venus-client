@@ -100,11 +100,49 @@ const dataStoreORMGetVerifiableCredentials = async (
   })
 }
 
+const handleMessage = async (
+  endpoint: string,
+  raw: string,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/handleMessage', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId,
+    },
+    body: JSON.stringify({ raw, save: true }),
+  })
+}
+
+const dataStoreORMGetMessages = async (
+  endpoint: string,
+  query: any,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/dataStoreORMGetMessages', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify(query),
+  })
+}
+
 export {
   getUser,
   createUser,
+  handleMessage,
   identityManagerGetIdentities,
   identityManagerGetOrCreateIdentity,
   createVerifiableCredential,
   dataStoreORMGetVerifiableCredentials,
+  dataStoreORMGetMessages,
 }

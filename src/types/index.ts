@@ -12,11 +12,13 @@ export interface AppState {
   user: any
   loadingUser: boolean
   defaultIdentity: any
+  messages: any[]
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>
   createCredential: (name: string) => Promise<any>
   getCredentials: () => Promise<any>
+  handleMessage: (raw: string) => Promise<any>
 }
 
 export interface AuthState {
@@ -67,6 +69,7 @@ export interface MessagePayload {
 }
 
 export interface ExtMessage {
+  requestId?: string
   tabId?: number
   source: 'TRUST_AGENT_ID_WALLET'
   type:

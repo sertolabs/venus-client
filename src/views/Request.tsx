@@ -1,18 +1,80 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, Heading, Text, Button } from 'rimble-ui'
 import { RequestContext } from '../providers/RequestProvider'
 import { AppContext } from '../providers/AppProvider'
 
 const Request: React.FC<{}> = () => {
   const { request, respond } = useContext(RequestContext)
-  const { defaultIdentity: identity } = useContext(AppContext)
+  const { defaultIdentity: identity, handleMessage } = useContext(AppContext)
+  const [sdr, setSdr] = useState<any>()
   const approve = () => {
-    respond({ did: identity.did, action: 'APPROVE' })
+    respond({
+      did: identity.did,
+      action: 'APPROVE',
+    })
   }
 
   const reject = () => {
     respond({ action: 'REJECT' })
   }
+
+  const connectRequest = () => {
+    return (
+      <Box padding={15}>
+        <Box>
+          <Text>Request type: {request?.message?.type}</Text>
+          <Text>Requested: {requestedItems()} </Text>
+        </Box>
+        <Box>
+          <Text as={'p'}>You are sharing your identifier with bluuurup</Text>
+          {identity && (
+            <Text as={'p'} className={'break-word'}>
+              {identity.did}
+            </Text>
+          )}
+        </Box>
+      </Box>
+    )
+  }
+
+  const sdRequest = () => {
+    return (
+      <Box padding={15}>
+        <Box>
+          <Text>Request type: {request?.message?.type}</Text>
+          <Text className={'break-word'}>
+            <b>{sdr?.from}</b> has requested you share credentials
+          </Text>
+        </Box>
+        <Box>
+          <Text as={'p'}>Show requested credentials...</Text>
+        </Box>
+      </Box>
+    )
+  }
+
+  const getSdRequest = async () => {
+    console.log('> request show payload with jwt', request)
+    const sdr = await handleMessage(request?.message.payload.jwt)
+
+    setSdr(sdr)
+  }
+
+  const requestedItems = () => {
+    return (
+      <ul>
+        {request?.message?.payload?.request?.map((item: string) => {
+          return <li>{item}</li>
+        })}
+      </ul>
+    )
+  }
+
+  useEffect(() => {
+    if (request?.message.type === 'SD_REQUEST') {
+      getSdRequest()
+    }
+  }, [request])
 
   return (
     <Box
@@ -26,22 +88,10 @@ const Request: React.FC<{}> = () => {
       <Heading as="h1">
         <b>Request!</b>
       </Heading>
-      <Box padding={15}>
-        <Text>Request type: {request?.message?.type}</Text>
-        <Text>Requested:</Text>
-        {request &&
-          request?.message?.payload?.request?.map((item: string) => {
-            return <Text>{item}</Text>
-          })}
-      </Box>
-      <Box padding={15}>
-        <Text as={'p'}>You are sharing your identifier with bluuurup</Text>
-        {identity && (
-          <Text as={'p'} className={'break-word'}>
-            {identity.did}
-          </Text>
-        )}
-      </Box>
+
+      {request?.message.type === 'CONNECT_REQUEST' && connectRequest()}
+
+      {sdr && sdRequest()}
 
       {request?.message && (
         <Box
@@ -53,10 +103,10 @@ const Request: React.FC<{}> = () => {
           <Button
             width={250}
             marginBottom={'10'}
-            onClick={approve}
+            onClick={sdRequest}
             disabled={!identity}
           >
-            SHARE DID
+            SHARE
           </Button>
           <Button warn width={250} onClick={reject} disabled={!identity}>
             REJECT
