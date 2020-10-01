@@ -136,6 +136,24 @@ const dataStoreORMGetMessages = async (
   })
 }
 
+const getVerifiableCredentialsForSdr = async (
+  endpoint: string,
+  sdr: any,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/getVerifiableCredentialsForSdr', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify({ sdr }),
+  })
+}
+
 export {
   getUser,
   createUser,
@@ -145,4 +163,5 @@ export {
   createVerifiableCredential,
   dataStoreORMGetVerifiableCredentials,
   dataStoreORMGetMessages,
+  getVerifiableCredentialsForSdr,
 }

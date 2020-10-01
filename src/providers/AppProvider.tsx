@@ -150,6 +150,17 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
+  const getRequestedCredentials = async (sdr: any) => {
+    if (session && tenantId && defaultIdentity) {
+      return await sdk.getVerifiableCredentialsForSdr(
+        ENDPOINTS.AGENT,
+        sdr,
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
   useEffect(() => {
     if (session) {
       getUser(session.id_token)
@@ -181,6 +192,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         createCredential,
         getCredentials,
         handleMessage,
+        getRequestedCredentials,
       }}
     >
       {children}

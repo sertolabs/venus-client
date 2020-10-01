@@ -19,6 +19,7 @@ export interface AppState {
   createCredential: (name: string) => Promise<any>
   getCredentials: () => Promise<any>
   handleMessage: (raw: string) => Promise<any>
+  getRequestedCredentials: (sdr: any) => Promise<any>
 }
 
 export interface AuthState {
@@ -52,8 +53,8 @@ export enum MessageType {
   AUTH_RESPONSE,
   CONNNECT_REQUEST,
   CONNECT_RESPONSE,
-  DISCLOSURE_REQUEST,
-  DISCLOSURE_RESPONSE,
+  SD_REQUEST,
+  SD_RESPONSE,
 }
 
 export enum MessageStatus {
@@ -77,7 +78,7 @@ export interface ExtMessage {
     | 'AUTH_RESPONSE'
     | 'CONNECT_REQUEST'
     | 'CONNECT_RESPONSE'
-    | 'DISCLOSURE_REQUEST'
-    | 'DISCLOSURE_RESPONSE'
+    | 'SD_REQUEST'
+    | 'SD_RESPONSE'
   payload: MessagePayload
 }
