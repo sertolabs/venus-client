@@ -11,6 +11,19 @@
         font-family: Arial, Helvetica, sans-serif;
       }
 
+      pre {
+        font-family: monospace;
+        white-space: pre;
+        font-size: 16px;
+      }
+
+      #result {
+        width: 900px;
+        background-color: #24232d;
+        color: aqua;
+        padding: 15px;
+      }
+
       .button {
         width: 200;
         padding: 5;
@@ -61,8 +74,11 @@
         />
       </div>
 
-      <h3><b>Extension Status</b></h3>
-      <div id="content">None</div>
+      <h3><b>Status</b></h3>
+      <pre><div id="content">None</div></pre>
+
+      <h3><b>Result</b></h3>
+      <pre id="result"></pre>
     </div>
   </body>
 

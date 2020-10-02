@@ -154,6 +154,40 @@ const getVerifiableCredentialsForSdr = async (
   })
 }
 
+const createVerifiablePresentation = async (
+  endpoint: string,
+  verifiablePresentation: {
+    issuer: { did: string }
+    audience: string[]
+    credentials: any[]
+  },
+  token: string,
+  tenantId: string,
+) => {
+  const presentation = {
+    presentation: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiablePresentation'],
+      holder: verifiablePresentation.issuer.did,
+      audience: verifiablePresentation.audience,
+      issuanceDate: new Date().toISOString(),
+      verifiableCredential: verifiablePresentation.credentials,
+    },
+    save: true,
+  }
+
+  return await request(endpoint + '/createVerifiablePresentation', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify(presentation),
+  })
+}
+
 export {
   getUser,
   createUser,
@@ -164,4 +198,5 @@ export {
   dataStoreORMGetVerifiableCredentials,
   dataStoreORMGetMessages,
   getVerifiableCredentialsForSdr,
+  createVerifiablePresentation,
 }

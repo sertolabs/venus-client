@@ -3,12 +3,13 @@ import { Box, Text } from 'rimble-ui'
 
 interface CredentialProps {
   vc: any
+  onClick?: () => void
 }
 
-const Credential: React.FC<CredentialProps> = ({ vc }) => {
-  console.log(vc.credentialSubject)
+const Credential: React.FC<CredentialProps> = ({ vc, onClick }) => {
   return (
     <Box
+      onClick={onClick}
       borderRadius={5}
       padding={10}
       backgroundColor={'whitesmoke'}

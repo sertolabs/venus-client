@@ -7,31 +7,43 @@ import Credential from '../components/Credential'
 const Request: React.FC<{}> = () => {
   const { request, respond } = useContext(RequestContext)
   const [sdrCredentials, setSdrCredentials] = useState<any[]>()
+  const [selectedCredentials, setSelectedCredentials] = useState<any[]>([])
   const {
     defaultIdentity: identity,
     handleMessage,
     getRequestedCredentials,
+    createVerifiablePresentation,
   } = useContext(AppContext)
   const [sdr, setSdr] = useState<any>()
 
-  const approve = () => {
+  const approve = async () => {
     if (request?.message.type === 'CONNECT_REQUEST') {
       respond({
         action: 'APPROVE',
         did: identity.did,
       })
     } else if (request?.message.type === 'SD_REQUEST') {
-      respond({
-        action: 'APPROVE',
-        verifiablePresentation: {
-          hello: 'World',
-        },
-      })
+      if (selectedCredentials?.length > 0) {
+        const verifiablePresentation = await createVerifiablePresentation({
+          issuer: { did: identity.did },
+          audience: [sdr.from],
+          credentials: selectedCredentials,
+        })
+
+        respond({
+          action: 'APPROVE',
+          verifiablePresentation,
+        })
+      }
     }
   }
 
   const reject = () => {
     respond({ action: 'REJECT' })
+  }
+
+  const selectedCredential = (vc: any) => {
+    setSelectedCredentials([vc])
   }
 
   const getCredentials = async () => {
@@ -91,7 +103,12 @@ const Request: React.FC<{}> = () => {
                 </Box>
                 <Box>
                   {sdr.credentials.map((vc: any) => {
-                    return <Credential vc={vc} />
+                    return (
+                      <Credential
+                        vc={vc}
+                        onClick={() => selectedCredential(vc)}
+                      />
+                    )
                   })}
                 </Box>
               </Box>
@@ -127,6 +144,7 @@ const Request: React.FC<{}> = () => {
 
   useEffect(() => {
     if (sdr) {
+      console.log(sdr)
       getCredentials()
     }
   }, [sdr])

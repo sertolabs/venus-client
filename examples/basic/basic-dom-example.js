@@ -37,7 +37,11 @@ async function connectToWallet() {
       const identity = await idWallet.connect()
       if (identity) {
         console.info('Identity shared from extension', identity)
-        document.getElementById('content').textContent = identity.payload.did
+        document.getElementById('content').textContent = 'Identity shared...'
+
+        document
+          .getElementById('result')
+          .appendChild(document.createTextNode(identity.payload.did))
       }
     } catch (err) {
       document.getElementById('content').textContent =
@@ -55,7 +59,17 @@ async function requestNameCredential() {
       const credential = await idWallet.request(SDR_JWT)
       if (credential) {
         console.info('Credential shared from extension', credential)
-        document.getElementById('content').textContent = credential.payload.data
+
+        document.getElementById('content').textContent =
+          'Name credential received...'
+
+        document
+          .getElementById('result')
+          .appendChild(
+            document.createTextNode(
+              JSON.stringify(credential.payload, null, 4),
+            ),
+          )
       }
     } catch (er) {
       document.getElementById('content').textContent =

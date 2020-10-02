@@ -161,6 +161,17 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
+  const createVerifiablePresentation = async (verifiablePresentation: any) => {
+    if (session && tenantId && defaultIdentity) {
+      return sdk.createVerifiablePresentation(
+        ENDPOINTS.AGENT,
+        verifiablePresentation,
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
   useEffect(() => {
     if (session) {
       getUser(session.id_token)
@@ -193,6 +204,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         getCredentials,
         handleMessage,
         getRequestedCredentials,
+        createVerifiablePresentation,
       }}
     >
       {children}

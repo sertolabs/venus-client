@@ -4,7 +4,14 @@ import { Box } from 'rimble-ui'
 const Header: React.FC<{}> = () => {
   return (
     <Box height={65} id={'header'} backgroundColor={'whitesmoke'}>
-      <Box paddingTop={10} paddingLeft={15}>
+      <Box
+        paddingTop={10}
+        paddingLeft={15}
+        paddingRight={15}
+        flexDirection={'row'}
+        display={'flex'}
+        style={{ justifyContent: 'space-between' }}
+      >
         <Box
           width={45}
           height={45}

@@ -20,6 +20,7 @@ export interface AppState {
   getCredentials: () => Promise<any>
   handleMessage: (raw: string) => Promise<any>
   getRequestedCredentials: (sdr: any) => Promise<any>
+  createVerifiablePresentation: (vp: any) => Promise<any>
 }
 
 export interface AuthState {
