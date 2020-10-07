@@ -81,5 +81,7 @@ export interface ExtMessage {
     | 'CONNECT_RESPONSE'
     | 'SD_REQUEST'
     | 'SD_RESPONSE'
+    | 'VC_SAVE_REQUEST'
+    | 'VC_SAVE_RESPONSE'
   payload: MessagePayload
 }

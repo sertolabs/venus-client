@@ -6,13 +6,13 @@ import App from './App'
 
 export const Root: React.FC<{}> = () => {
   return (
-    <RequestProvider>
-      <AuthProvider>
-        <AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        <RequestProvider>
           <App />
-        </AppProvider>
-      </AuthProvider>
-    </RequestProvider>
+        </RequestProvider>
+      </AppProvider>
+    </AuthProvider>
   )
 }
 

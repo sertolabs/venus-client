@@ -31,6 +31,11 @@ window.addEventListener('message', function (event) {
     chrome.runtime.sendMessage(message)
   }
 
+  if (message.type === 'VC_SAVE_REQUEST') {
+    console.log('> sending VC_SAVE_REQUEST message to background', message)
+    chrome.runtime.sendMessage(message)
+  }
+
   if (message.type === 'SD_REQUEST') {
     console.log('> sending SD_REQUEST message to background', message)
     chrome.runtime.sendMessage(message)
@@ -53,6 +58,14 @@ chrome.runtime.onMessage.addListener((message) => {
       requestId: message.requestId,
       source: 'TRUST_AGENT_ID_WALLET',
       type: 'CONNECT_RESPONSE',
+      payload: message.payload,
+    })
+  }
+
+  if (message.type === 'VC_SAVE_RESPONSE') {
+    window.postMessage({
+      source: 'TRUST_AGENT_ID_WALLET',
+      type: 'VC_SAVE_RESPONSE',
       payload: message.payload,
     })
   }

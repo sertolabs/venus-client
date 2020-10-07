@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Box, Heading, Text, Button } from 'rimble-ui'
+import { Box, Heading, Text, Button, Flex } from 'rimble-ui'
 import { AuthContext } from '../providers/AuthProvider'
 import { AppContext } from '../providers/AppProvider'
 
@@ -21,29 +21,46 @@ const Dashboard: React.FC<{}> = () => {
       display={'flex'}
       flex={1}
       flexDirection={'column'}
-      alignItems={'center'}
       paddingBottom={20}
+      paddingLeft={20}
+      paddingRight={20}
     >
       <Heading as="h1">
         <b>Activity</b>
       </Heading>
-      <Box padding={15}>
-        <Text textAlign={'center'}>{user?.email}</Text>
-        <Text textAlign={'center'} className={'break-word'}>
-          <b>{identity?.did}</b>
-        </Text>
-      </Box>
-
-      <Box padding={15}>
-        {messages?.map((message) => {
-          return <Text>{message.createdAt}</Text>
+      <Box marginTop={15}></Box>
+      <Box paddingBottom={10}>
+        {messages?.map((message: any) => {
+          return (
+            <Box
+              borderRadius={5}
+              padding={10}
+              backgroundColor={'whitesmoke'}
+              paddingTop={20}
+              marginBottom={10}
+            >
+              <Box>
+                <Box
+                  marginBottom={10}
+                  display={'flex'}
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                >
+                  <Text
+                    width={50}
+                    fontSize={12}
+                    fontWeight={'bold'}
+                    color={'darkgrey'}
+                    marginRight={20}
+                  >
+                    MESSAGE TYPE
+                  </Text>
+                  <Text fontSize={16}>{message.type}</Text>
+                </Box>
+              </Box>
+            </Box>
+          )
         })}
-      </Box>
-
-      <Box marginTop={30}>
-        <Button width={250} onClick={logOut}>
-          LOG OUT
-        </Button>
       </Box>
     </Box>
   )

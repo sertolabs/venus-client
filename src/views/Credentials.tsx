@@ -28,7 +28,14 @@ const Credentials: React.FC<{}> = () => {
   }, [credential])
 
   return (
-    <Box display={'flex'} flex={1} flexDirection={'column'} paddingBottom={20}>
+    <Box
+      display={'flex'}
+      flex={1}
+      flexDirection={'column'}
+      paddingBottom={20}
+      paddingLeft={20}
+      paddingRight={20}
+    >
       <Heading as="h1">
         <b>Credentials {credentials && `(${credentials.length})`}</b>
       </Heading>
@@ -51,9 +58,19 @@ const Credentials: React.FC<{}> = () => {
       </Flex>
       <Box marginTop={30}></Box>
       <Box paddingBottom={10}>
-        {credentials?.map((vc: any) => {
-          return <Credential vc={vc}></Credential>
-        })}
+        {credentials ? (
+          credentials?.map((vc: any) => {
+            return <Credential vc={vc}></Credential>
+          })
+        ) : (
+          <Box>
+            <Box className={'spinner'}>
+              <Box className={'bounce1'}></Box>
+              <Box className={'bounce2'}></Box>
+              <Box className={'bounce3'}></Box>
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   )
