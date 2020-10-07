@@ -8,6 +8,7 @@ const Request: React.FC<{}> = () => {
   const { request, respond } = useContext(RequestContext)
   const [sdrCredentials, setSdrCredentials] = useState<any[]>()
   const [selectedCredentials, setSelectedCredentials] = useState<any[]>([])
+  const [selectedIndex, setSelectedIndex] = useState<number>()
   const {
     defaultIdentity: identity,
     handleMessage,
@@ -42,7 +43,8 @@ const Request: React.FC<{}> = () => {
     respond({ action: 'REJECT' })
   }
 
-  const selectedCredential = (vc: any) => {
+  const selectedCredential = (vc: any, i: number) => {
+    setSelectedIndex(i)
     setSelectedCredentials([vc])
   }
 
@@ -54,7 +56,7 @@ const Request: React.FC<{}> = () => {
           claimType: c.claimType,
           essential: c.essential,
           reason: c.reason,
-          ...(c.issuers.length > 0 ? { issuers: c.issuers } : {}),
+          ...(c.issuers?.length > 0 ? { issuers: c.issuers } : {}),
         }
       }),
     })
@@ -102,11 +104,12 @@ const Request: React.FC<{}> = () => {
                   </Text>
                 </Box>
                 <Box>
-                  {sdr.credentials.map((vc: any) => {
+                  {sdr.credentials.map((vc: any, i: number) => {
                     return (
                       <Credential
+                        selected={selectedIndex === i}
                         vc={vc}
-                        onClick={() => selectedCredential(vc)}
+                        onClick={() => selectedCredential(vc, i)}
                       />
                     )
                   })}

@@ -40,7 +40,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       setLoading(true)
       const user = idToken && (await sdk.getUser(ep, idToken))
       setUser(user)
-      setTenantId(user.tenants[0].Tenant_id)
+      // setTenantId(user.tenants[0].Tenant_id)
       setLoading(false)
       sendAuthResponse({
         source: 'TRUST_AGENT_ID_WALLET',
@@ -53,7 +53,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         setLoading(true)
         const newUser = await createUser()
         setUser(newUser)
-        setTenantId(newUser.tenants[0].Tenant_id)
+        // setTenantId(newUser.tenants[0].Tenant_id)
         setLoading(false)
         return newUser
       }

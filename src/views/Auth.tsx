@@ -48,24 +48,8 @@ const Auth: React.FC<{}> = () => {
           </Heading>
           <Box padding={15}>
             <Text as={'p'} textAlign={'center'}>
-              Enter your email address to get a one time passcode or visit trust
-              agency and login.
+              Visit trust agency and login to autenticate
             </Text>
-          </Box>
-
-          <Input
-            width={300}
-            type="text"
-            required={true}
-            defaultValue={email}
-            placeholder="Email Address"
-            onChange={(ev: any) => setEmail(ev.target.value)}
-          />
-
-          <Box marginTop={30}>
-            <Button width={250} onClick={() => email && sendEmailCode(email)}>
-              LOGIN
-            </Button>
           </Box>
         </Box>
       )}
