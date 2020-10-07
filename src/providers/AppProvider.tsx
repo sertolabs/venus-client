@@ -15,6 +15,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   const [user, setUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [defaultIdentity, setDefaultIdentity] = useState<any>()
+  const [messages, setMessages] = useState<any[]>([])
 
   const sendCode = async (email: string) => {
     const ep = `https://dev-mdazdke4.us.auth0.com/passwordless/start`
@@ -39,7 +40,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       setLoading(true)
       const user = idToken && (await sdk.getUser(ep, idToken))
       setUser(user)
-      setTenantId(user.tenants[0].Tenant_id)
+      // setTenantId(user.tenants[0].Tenant_id)
       setLoading(false)
       sendAuthResponse({
         source: 'TRUST_AGENT_ID_WALLET',
@@ -52,7 +53,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         setLoading(true)
         const newUser = await createUser()
         setUser(newUser)
-        setTenantId(newUser.tenants[0].Tenant_id)
+        // setTenantId(newUser.tenants[0].Tenant_id)
         setLoading(false)
         return newUser
       }
@@ -116,6 +117,61 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
+  const handleMessage = async (jwt: string) => {
+    if (session && tenantId) {
+      return await sdk.handleMessage(
+        ENDPOINTS.AGENT,
+        jwt,
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
+  const getMessages = async () => {
+    if (session && tenantId && defaultIdentity) {
+      const messages = await sdk.dataStoreORMGetMessages(
+        ENDPOINTS.AGENT,
+        {
+          // where: [
+          //   {
+          //     column: 'to',
+          //     value: [defaultIdentity.did],
+          //   },
+          // ],
+          // order: [{ column: 'issuanceDate', direction: 'DESC' }],
+        },
+        session.id_token,
+        tenantId,
+      )
+      if (messages) {
+        setMessages(messages)
+      }
+    }
+  }
+
+  const getRequestedCredentials = async (sdr: any) => {
+    if (session && tenantId && defaultIdentity) {
+      return await sdk.getVerifiableCredentialsForSdr(
+        ENDPOINTS.AGENT,
+        sdr,
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
+  const createVerifiablePresentation = async (verifiablePresentation: any) => {
+    if (session && tenantId && defaultIdentity) {
+      return sdk.createVerifiablePresentation(
+        ENDPOINTS.AGENT,
+        verifiablePresentation,
+        session.id_token,
+        tenantId,
+      )
+    }
+  }
+
   useEffect(() => {
     if (session) {
       getUser(session.id_token)
@@ -128,17 +184,27 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }, [user])
 
+  useEffect(() => {
+    if (session) {
+      getMessages()
+    }
+  }, [defaultIdentity])
+
   return (
     <AppContext.Provider
       value={{
         user,
         loadingUser: loading,
         defaultIdentity,
+        messages,
         sendCode,
         verifyCode,
         getUser,
         createCredential,
         getCredentials,
+        handleMessage,
+        getRequestedCredentials,
+        createVerifiablePresentation,
       }}
     >
       {children}

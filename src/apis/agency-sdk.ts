@@ -100,11 +100,103 @@ const dataStoreORMGetVerifiableCredentials = async (
   })
 }
 
+const handleMessage = async (
+  endpoint: string,
+  raw: string,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/handleMessage', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId,
+    },
+    body: JSON.stringify({ raw, save: true }),
+  })
+}
+
+const dataStoreORMGetMessages = async (
+  endpoint: string,
+  query: any,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/dataStoreORMGetMessages', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify(query),
+  })
+}
+
+const getVerifiableCredentialsForSdr = async (
+  endpoint: string,
+  sdr: any,
+  token: string,
+  tenantId: string,
+) => {
+  return await request(endpoint + '/getVerifiableCredentialsForSdr', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify({ sdr }),
+  })
+}
+
+const createVerifiablePresentation = async (
+  endpoint: string,
+  verifiablePresentation: {
+    issuer: { did: string }
+    audience: string[]
+    credentials: any[]
+  },
+  token: string,
+  tenantId: string,
+) => {
+  const presentation = {
+    presentation: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiablePresentation'],
+      holder: verifiablePresentation.issuer.did,
+      audience: verifiablePresentation.audience,
+      issuanceDate: new Date().toISOString(),
+      verifiableCredential: verifiablePresentation.credentials,
+    },
+    save: true,
+  }
+
+  return await request(endpoint + '/createVerifiablePresentation', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+      tenantId: tenantId,
+    },
+    body: JSON.stringify(presentation),
+  })
+}
+
 export {
   getUser,
   createUser,
+  handleMessage,
   identityManagerGetIdentities,
   identityManagerGetOrCreateIdentity,
   createVerifiableCredential,
   dataStoreORMGetVerifiableCredentials,
+  dataStoreORMGetMessages,
+  getVerifiableCredentialsForSdr,
+  createVerifiablePresentation,
 }

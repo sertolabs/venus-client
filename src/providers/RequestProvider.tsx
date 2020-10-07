@@ -29,13 +29,25 @@ const RequestProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
+  const getRequestType = () => {
+    switch (request?.message.type) {
+      case 'CONNECT_REQUEST':
+        return 'CONNECT_RESPONSE'
+      case 'SD_REQUEST':
+        return 'SD_RESPONSE'
+      default:
+        return 'CONNECT_REQUEST'
+    }
+  }
+
   const respond = async (payload: any) => {
     console.log('> sending message from extension')
 
     await sendTabsMessage({
+      requestId: request?.message.requestId,
       source: 'TRUST_AGENT_ID_WALLET',
       tabId: request?.sender.tab.id,
-      type: 'CONNECT_RESPONSE',
+      type: getRequestType(),
       payload,
     })
 

@@ -23,14 +23,15 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const getSessionFromStorage = async () => {
     const session: any = await storage.getItem('session')
     if (session) {
-      setSession(session)
+      saveSession(session)
     }
   }
 
   const getTenantIdFromStorage = async () => {
     const tenantId: any = await storage.getItem('tenantId')
+    console.log(tenantId)
     if (tenantId) {
-      setTenantId(tenantId)
+      saveTenantId(tenantId)
     }
   }
 

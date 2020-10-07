@@ -22,7 +22,9 @@ window.idWallet = {
     })
   },
   connect: async () => {
+    const requestId = window.idWallet.utils._generateRandomString(22)
     window.postMessage({
+      requestId,
       source: 'TRUST_AGENT_ID_WALLET',
       type: 'CONNECT_REQUEST',
       payload: { request: ['identifier'] },
@@ -38,5 +40,39 @@ window.idWallet = {
         }
       })
     })
+  },
+  request: async (jwt) => {
+    const requestId = window.idWallet.utils._generateRandomString(22)
+    window.postMessage({
+      requestId,
+      source: 'TRUST_AGENT_ID_WALLET',
+      type: 'SD_REQUEST',
+      payload: { jwt },
+    })
+    return new Promise((resolve, reject) => {
+      window.addEventListener('message', (event) => {
+        if (event.data.type === 'SD_RESPONSE') {
+          if (event.data.payload.action === 'APPROVE') {
+            resolve(event.data)
+          } else {
+            reject(event.data)
+          }
+        }
+      })
+    })
+  },
+  utils: {
+    _generateRandomString(length) {
+      var result = ''
+      var characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      var charactersLength = characters.length
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength),
+        )
+      }
+      return result
+    },
   },
 }

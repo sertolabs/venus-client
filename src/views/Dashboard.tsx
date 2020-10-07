@@ -7,12 +7,14 @@ import { AppContext } from '../providers/AppProvider'
 const Dashboard: React.FC<{}> = () => {
   const history = useHistory()
   const { clearSession } = useContext(AuthContext)
-  const { user, defaultIdentity: identity } = useContext(AppContext)
+  const { user, defaultIdentity: identity, messages } = useContext(AppContext)
 
   const logOut = () => {
     clearSession()
     history.replace('/')
   }
+
+  console.log(messages)
 
   return (
     <Box
@@ -22,20 +24,20 @@ const Dashboard: React.FC<{}> = () => {
       alignItems={'center'}
       paddingBottom={20}
     >
-      <Box height={40}></Box>
       <Heading as="h1">
-        <b>Looking good!</b>
+        <b>Activity</b>
       </Heading>
+      <Box padding={15}>
+        <Text textAlign={'center'}>{user?.email}</Text>
+        <Text textAlign={'center'} className={'break-word'}>
+          <b>{identity?.did}</b>
+        </Text>
+      </Box>
 
       <Box padding={15}>
-        <Text textAlign={'center'} as={'p'}>
-          You have logged in as {user.email}
-        </Text>
-        {identity && (
-          <Text textAlign={'center'} as={'p'} className={'break-word'}>
-            Your default identifier is {identity.did}
-          </Text>
-        )}
+        {messages?.map((message) => {
+          return <Text>{message.createdAt}</Text>
+        })}
       </Box>
 
       <Box marginTop={30}>

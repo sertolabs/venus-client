@@ -12,11 +12,15 @@ export interface AppState {
   user: any
   loadingUser: boolean
   defaultIdentity: any
+  messages: any[]
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>
   createCredential: (name: string) => Promise<any>
   getCredentials: () => Promise<any>
+  handleMessage: (raw: string) => Promise<any>
+  getRequestedCredentials: (sdr: any) => Promise<any>
+  createVerifiablePresentation: (vp: any) => Promise<any>
 }
 
 export interface AuthState {
@@ -50,8 +54,8 @@ export enum MessageType {
   AUTH_RESPONSE,
   CONNNECT_REQUEST,
   CONNECT_RESPONSE,
-  DISCLOSURE_REQUEST,
-  DISCLOSURE_RESPONSE,
+  SD_REQUEST,
+  SD_RESPONSE,
 }
 
 export enum MessageStatus {
@@ -67,6 +71,7 @@ export interface MessagePayload {
 }
 
 export interface ExtMessage {
+  requestId?: string
   tabId?: number
   source: 'TRUST_AGENT_ID_WALLET'
   type:
@@ -74,7 +79,7 @@ export interface ExtMessage {
     | 'AUTH_RESPONSE'
     | 'CONNECT_REQUEST'
     | 'CONNECT_RESPONSE'
-    | 'DISCLOSURE_REQUEST'
-    | 'DISCLOSURE_RESPONSE'
+    | 'SD_REQUEST'
+    | 'SD_RESPONSE'
   payload: MessagePayload
 }

@@ -13,7 +13,7 @@ chrome.windows.onRemoved.addListener(() => {
 chrome.runtime.onMessage.addListener((message, sender, response) => {
   console.log('> message from background', message.type)
 
-  if (message.type === 'CONNECT_REQUEST') {
+  if ((message.type === 'CONNECT_REQUEST') | (message.type === 'SD_REQUEST')) {
     // Set the message and sender, it will override previous
     chrome.storage.local.set({ message, sender })
 

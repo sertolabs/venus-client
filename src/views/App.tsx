@@ -17,8 +17,6 @@ export const App: React.FC<{}> = ({}) => {
   const { user } = useContext(AppContext)
   const { request } = useContext(RequestContext)
 
-  console.log('> request', request)
-
   // Not really but it will do for now
   const hasRequest = user && request
 
@@ -29,7 +27,7 @@ export const App: React.FC<{}> = ({}) => {
         <Router>
           {hasRequest && <Redirect to={'/request'} />}
           {user && !request && <Redirect to={'/dashboard'} />}
-          {user && <Navbar />}
+          {user && !request && <Navbar />}
           <Route path={'/'} component={Auth} exact />
           <Route path={'/verify'} component={Verify} />
           <Route path={'/request'} component={Request} />
