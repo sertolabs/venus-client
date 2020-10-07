@@ -52,7 +52,7 @@ window.idWallet = {
     return new Promise((resolve, reject) => {
       window.addEventListener('message', (event) => {
         if (event.data.type === 'VC_SAVE_RESPONSE') {
-          if (event.data.payload.action === 'ACCEPT') {
+          if (event.data.payload.action === 'CREDENTIAL_ACCEPTED') {
             resolve(event.data)
           } else {
             reject(event.data)

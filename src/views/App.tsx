@@ -16,8 +16,6 @@ import isChromeRuntime from '../utils/isChrome'
 export const App: React.FC<{}> = ({}) => {
   const { user } = useContext(AppContext)
   const { request } = useContext(RequestContext)
-
-  // Not really but it will do for now
   const hasRequest = user && request
 
   const PROD = (

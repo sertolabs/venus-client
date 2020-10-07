@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import { Box, Heading, Text, Button, Input, Flex } from 'rimble-ui'
-import { AuthContext } from '../providers/AuthProvider'
+import { Box, Heading, Button, Input, Flex } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
 import Credential from '../components/Credential'
-// import StubCredential from '../stubs/credential.json'
 
 const Credentials: React.FC<{}> = () => {
   const { createCredential, getCredentials } = useContext(AppContext)
