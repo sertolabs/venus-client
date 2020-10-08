@@ -14,7 +14,8 @@ const Credential: React.FC<CredentialProps> = ({ vc, selected, onClick }) => {
       onClick={onClick}
       borderRadius={5}
       padding={10}
-      backgroundColor={selected ? 'skyblue' : 'whitesmoke'}
+      backgroundColor={'whitesmoke'}
+      border={selected ? '1px solid #7c7cc5' : '1px solid whitesmoke'}
       paddingTop={20}
       marginBottom={10}
     >

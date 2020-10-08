@@ -3,25 +3,34 @@ import { Box, Heading, Text, Button } from 'rimble-ui'
 import { RequestContext } from '../../providers/RequestProvider'
 import { AppContext } from '../../providers/AppProvider'
 import Credential from '../../components/Credential'
+// import useSelectedCredentials from '../../hooks/useSelectedCredentials'
+import useRequest from '../../hooks/useRequest'
+import Loader from '../../components/Loader'
 
 const Request: React.FC<{}> = () => {
   const { request, respond } = useContext(RequestContext)
   const [sdrCredentials, setSdrCredentials] = useState<any[]>()
   const [selectedCredentials, setSelectedCredentials] = useState<any[]>([])
-  const [selectedIndex, setSelectedIndex] = useState<number>()
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [message, setMessage] = useState<any>()
   const {
     defaultIdentity: identity,
     handleMessage,
     getRequestedCredentials,
     createVerifiablePresentation,
   } = useContext(AppContext)
-  const [sdr, setSdr] = useState<any>()
+
+  //   const {
+  //     selected,
+  //     onSelect: onSelectItem,
+  //     valid: formValid,
+  //   } = useSelectedCredentials(sdr.data)
 
   const approve = async () => {
     if (selectedCredentials?.length > 0) {
       const verifiablePresentation = await createVerifiablePresentation({
         issuer: { did: identity.did },
-        audience: [sdr.from],
+        audience: [message.from],
         credentials: selectedCredentials,
       })
 
@@ -43,8 +52,7 @@ const Request: React.FC<{}> = () => {
 
   const getCredentials = async () => {
     const _sdrCredentials = await getRequestedCredentials({
-      // Quick hack to remove issuers until fix is merged
-      claims: sdr.data.claims.map((c: any) => {
+      claims: message.data.claims.map((c: any) => {
         return {
           claimType: c.claimType,
           essential: c.essential,
@@ -59,75 +67,93 @@ const Request: React.FC<{}> = () => {
     }
   }
 
-  const getSdRequest = async () => {
-    console.log('> request show payload with jwt', request)
-    const sdr = await handleMessage(request?.message.payload.jwt)
-
-    setSdr(sdr)
+  const getMessage = async () => {
+    const _message = await handleMessage(request?.message.payload.jwt)
+    setMessage(_message)
   }
 
   useEffect(() => {
-    if (request?.message.type === 'SD_REQUEST') {
-      getSdRequest()
+    if (request) {
+      getMessage()
     }
-  }, [request])
+  }, [])
 
   useEffect(() => {
-    if (sdr) {
-      console.log(sdr)
+    if (message) {
       getCredentials()
     }
-  }, [sdr])
+  }, [message])
 
   return (
     <Box
       display={'flex'}
       flex={1}
       flexDirection={'column'}
-      alignItems={'center'}
       paddingBottom={20}
+      paddingLeft={20}
+      paddingRight={20}
     >
-      <Box height={40}></Box>
       <Heading as="h1">
-        <b>Request!</b>
+        <b>Request</b>
       </Heading>
 
-      {sdr && (
-        <Box padding={15}>
+      {message && (
+        <Box>
           <Box display={'flex'} alignItems={'center'} flexDirection={'column'}>
-            <Text>Request type: {request?.message?.type}</Text>
             <Text className={'break-word'}>
-              <b>{sdr?.from}</b> has requested you share credentials
+              <b>{message?.from}</b> has requested you share the following
+              credentials.
             </Text>
           </Box>
           <Box>
-            {sdrCredentials?.map((sdr: any) => {
-              return (
-                <Box>
+            {sdrCredentials ? (
+              sdrCredentials.map((sdr: any, i: number) => {
+                return (
                   <Box>
-                    <Text>
-                      <b>{sdr.claimType}</b>
-                    </Text>
+                    <Box
+                      borderBottom={'1px solid #cccccc'}
+                      marginBottom={10}
+                      marginTop={10}
+                      backgroundColor={'ghostwhite'}
+                      padding={2}
+                    >
+                      <Text fontSize={12}>
+                        <b>{sdr.claimType.toUpperCase()}</b>
+                      </Text>
+                      <Text fontSize={14}>{sdr.reason}</Text>
+                    </Box>
+                    <Box>
+                      {sdr.credentials.map((vc: any, i: number) => {
+                        return (
+                          <Credential
+                            selected={selectedIndex === i}
+                            vc={vc}
+                            onClick={() => selectedCredential(vc, i)}
+                          />
+                        )
+                      })}
+
+                      {sdr.credentials.length === 0 && (
+                        <Box>
+                          <Text fontSize={14}>
+                            You do not have a
+                            <b>{sdr.claimType.toUpperCase()}</b>
+                            credential
+                          </Text>
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
-                  <Box>
-                    {sdr.credentials.map((vc: any, i: number) => {
-                      return (
-                        <Credential
-                          selected={selectedIndex === i}
-                          vc={vc}
-                          onClick={() => selectedCredential(vc, i)}
-                        />
-                      )
-                    })}
-                  </Box>
-                </Box>
-              )
-            })}
+                )
+              })
+            ) : (
+              <Loader />
+            )}
           </Box>
         </Box>
       )}
 
-      {request?.message && (
+      {message && (
         <Box
           marginTop={30}
           alignItems={'center'}
@@ -138,7 +164,7 @@ const Request: React.FC<{}> = () => {
             width={250}
             marginBottom={'10'}
             onClick={approve}
-            disabled={!identity}
+            disabled={!identity || selectedIndex === null}
           >
             SHARE
           </Button>
