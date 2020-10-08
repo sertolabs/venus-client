@@ -106,6 +106,10 @@ const handleMessage = async (
   token: string,
   tenantId: string,
 ) => {
+  console.group('Endpoint log...')
+  console.log(endpoint, raw, token, tenantId)
+  console.group('Endpoint log...')
+
   return await request(endpoint + '/handleMessage', {
     method: 'POST',
     headers: {

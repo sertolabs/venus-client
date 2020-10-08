@@ -8,7 +8,7 @@ import Verify from './Verify'
 import Header from '../components/Header'
 import Page from '../components/Page'
 import Dashboard from './Dashboard'
-import Request from './Request'
+import Request from './Requests'
 import Credentials from './Credentials'
 import Navbar from '../components/Navbar'
 import isChromeRuntime from '../utils/isChrome'
@@ -16,8 +16,6 @@ import isChromeRuntime from '../utils/isChrome'
 export const App: React.FC<{}> = ({}) => {
   const { user } = useContext(AppContext)
   const { request } = useContext(RequestContext)
-
-  // Not really but it will do for now
   const hasRequest = user && request
 
   const PROD = (

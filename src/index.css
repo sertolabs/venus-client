@@ -42,6 +42,7 @@ a {
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   padding-top: 65;
   overflow: auto;
 }

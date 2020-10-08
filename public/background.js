@@ -13,33 +13,41 @@ chrome.windows.onRemoved.addListener(() => {
 chrome.runtime.onMessage.addListener((message, sender, response) => {
   console.log('> message from background', message.type)
 
-  if ((message.type === 'CONNECT_REQUEST') | (message.type === 'SD_REQUEST')) {
-    // Set the message and sender, it will override previous
-    chrome.storage.local.set({ message, sender })
-
-    // Try to reuse the same popup as before
-    chrome.storage.local.get('requestWindow', (store) => {
-      if (store.requestWindow) {
-        chrome.windows.update(store.requestWindow.id)
-      } else {
-        chrome.windows.create(
-          {
-            url: 'index.html',
-            type: 'popup',
-            width: 380,
-            height: 600,
-          },
-          (newWindow) => {
-            chrome.storage.local.set({ requestWindow: newWindow })
-          },
-        )
-      }
-    })
-  }
-
   if (message.type === 'AUTH_REQUEST') {
     const { session, tenantId } = message.payload
 
     chrome.storage.local.set({ session, tenantId })
+  }
+
+  if (
+    (message.type === 'CONNECT_REQUEST') |
+    (message.type === 'SD_REQUEST') |
+    (message.type === 'VC_SAVE_REQUEST')
+  ) {
+    // Set the message and sender, it will override previous
+    console.log('> background saving message', message.type)
+    chrome.storage.local.set({ message, sender })
+
+    // No need to show popup for autosave messages
+    if (!message.payload.autosave) {
+      // Try to reuse the same popup as before
+      chrome.storage.local.get('requestWindow', (store) => {
+        if (store.requestWindow) {
+          chrome.windows.update(store.requestWindow.id)
+        } else {
+          chrome.windows.create(
+            {
+              url: 'index.html',
+              type: 'popup',
+              width: 380,
+              height: 600,
+            },
+            (newWindow) => {
+              chrome.storage.local.set({ requestWindow: newWindow })
+            },
+          )
+        }
+      })
+    }
   }
 })

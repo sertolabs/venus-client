@@ -41,6 +41,26 @@ window.idWallet = {
       })
     })
   },
+  save: async (vc, autosave) => {
+    const requestId = window.idWallet.utils._generateRandomString(24)
+    window.postMessage({
+      requestId,
+      source: 'TRUST_AGENT_ID_WALLET',
+      type: 'VC_SAVE_REQUEST',
+      payload: { verifiableCredential: vc, autosave },
+    })
+    return new Promise((resolve, reject) => {
+      window.addEventListener('message', (event) => {
+        if (event.data.type === 'VC_SAVE_RESPONSE') {
+          if (event.data.payload.action === 'CREDENTIAL_ACCEPTED') {
+            resolve(event.data)
+          } else {
+            reject(event.data)
+          }
+        }
+      })
+    })
+  },
   request: async (jwt) => {
     const requestId = window.idWallet.utils._generateRandomString(22)
     window.postMessage({

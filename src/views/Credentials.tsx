@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import { Box, Heading, Text, Button, Input, Flex } from 'rimble-ui'
-import { AuthContext } from '../providers/AuthProvider'
+import { Box, Heading, Button, Input, Flex } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
 import Credential from '../components/Credential'
-// import StubCredential from '../stubs/credential.json'
 
 const Credentials: React.FC<{}> = () => {
   const { createCredential, getCredentials } = useContext(AppContext)
@@ -28,7 +25,14 @@ const Credentials: React.FC<{}> = () => {
   }, [credential])
 
   return (
-    <Box display={'flex'} flex={1} flexDirection={'column'} paddingBottom={20}>
+    <Box
+      display={'flex'}
+      flex={1}
+      flexDirection={'column'}
+      paddingBottom={20}
+      paddingLeft={20}
+      paddingRight={20}
+    >
       <Heading as="h1">
         <b>Credentials {credentials && `(${credentials.length})`}</b>
       </Heading>
@@ -51,9 +55,19 @@ const Credentials: React.FC<{}> = () => {
       </Flex>
       <Box marginTop={30}></Box>
       <Box paddingBottom={10}>
-        {credentials?.map((vc: any) => {
-          return <Credential vc={vc}></Credential>
-        })}
+        {credentials ? (
+          credentials?.map((vc: any) => {
+            return <Credential vc={vc}></Credential>
+          })
+        ) : (
+          <Box>
+            <Box className={'spinner'}>
+              <Box className={'bounce1'}></Box>
+              <Box className={'bounce2'}></Box>
+              <Box className={'bounce3'}></Box>
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   )
