@@ -13,6 +13,7 @@ export interface AppState {
   loadingUser: boolean
   defaultIdentity: any
   messages: any[]
+  messagesLoading: boolean
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>

@@ -1,28 +1,35 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Heading, Button, Input, Flex } from 'rimble-ui'
+import { Box, Heading, Button, Input, Flex, Loader as Spinner } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
 import Credential from '../components/Credential'
+import Loader from '../components/Loader'
 
 const Credentials: React.FC<{}> = () => {
   const { createCredential, getCredentials } = useContext(AppContext)
   const [name, setName] = useState<string>()
   const [credential, setCredential] = useState()
   const [credentials, setCredentials] = useState<any[]>()
+  const [credentialsLoading, setCredentialsLoading] = useState(false)
+  const [createCredentialLoading, setCreateCredentialLoading] = useState(false)
 
   const issueCredential = async () => {
+    setCreateCredentialLoading(true)
     const _credential = name && (await createCredential(name))
     setName('')
-    setCredential(_credential)
+    setCreateCredentialLoading(false)
+    setCredentials((c) => [_credential].concat(c))
   }
 
   const getMyCredentials = async () => {
+    setCredentialsLoading(true)
     const _credentials = await getCredentials()
     setCredentials(_credentials)
+    setCredentialsLoading(false)
   }
 
   useEffect(() => {
     getMyCredentials()
-  }, [credential])
+  }, [])
 
   return (
     <Box
@@ -38,34 +45,36 @@ const Credentials: React.FC<{}> = () => {
       </Heading>
       <Flex>
         <Input
+          disabled={createCredentialLoading}
           width={280}
           type="text"
           required={true}
-          defaultValue={name}
+          value={name}
           placeholder="Enter your name"
           onChange={(ev: any) => setName(ev.target.value)}
         />
-        <Button
-          disabled={!name}
-          icon="Send"
-          icononly
-          marginLeft={10}
-          onClick={issueCredential}
-        />
+        {createCredentialLoading ? (
+          <Button disabled icononly marginLeft={10}>
+            <Spinner color={'white'} />
+          </Button>
+        ) : (
+          <Button
+            disabled={!name}
+            icon="Send"
+            icononly
+            marginLeft={10}
+            onClick={issueCredential}
+          />
+        )}
       </Flex>
       <Box marginTop={30}></Box>
       <Box paddingBottom={10}>
-        {credentials ? (
-          credentials?.map((vc: any) => {
-            return <Credential vc={vc}></Credential>
-          })
-        ) : (
-          <Box>
-            <Box className={'spinner'}>
-              <Box className={'bounce1'}></Box>
-              <Box className={'bounce2'}></Box>
-              <Box className={'bounce3'}></Box>
-            </Box>
+        {credentialsLoading && <Loader />}
+        {credentials && !credentialsLoading && (
+          <Box className={'animate__animated animate__fadeIn'}>
+            {credentials?.map((vc: any, i: number) => {
+              return <Credential vc={vc} key={i}></Credential>
+            })}
           </Box>
         )}
       </Box>
