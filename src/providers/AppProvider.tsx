@@ -16,6 +16,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   const [loading, setLoading] = useState(false)
   const [defaultIdentity, setDefaultIdentity] = useState<any>()
   const [messages, setMessages] = useState<any[]>([])
+  const [messagesLoading, setMessagesLoading] = useState(false)
 
   const sendCode = async (email: string) => {
     const ep = `https://dev-mdazdke4.us.auth0.com/passwordless/start`
@@ -130,6 +131,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
 
   const getMessages = async () => {
     if (session && tenantId && defaultIdentity) {
+      setMessagesLoading(true)
       const messages = await sdk.dataStoreORMGetMessages(
         ENDPOINTS.AGENT,
         {
@@ -145,6 +147,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         tenantId,
       )
       if (messages) {
+        setMessagesLoading(false)
         setMessages(messages)
       }
     }
@@ -197,6 +200,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         loadingUser: loading,
         defaultIdentity,
         messages,
+        messagesLoading,
         sendCode,
         verifyCode,
         getUser,

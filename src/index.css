@@ -55,6 +55,11 @@ a {
   overflow-wrap: anywhere;
 }
 
+.show-did {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

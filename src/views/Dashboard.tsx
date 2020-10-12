@@ -3,11 +3,17 @@ import { useHistory } from 'react-router-dom'
 import { Box, Heading, Text, Button, Flex } from 'rimble-ui'
 import { AuthContext } from '../providers/AuthProvider'
 import { AppContext } from '../providers/AppProvider'
+import Loader from '../components/Loader'
 
 const Dashboard: React.FC<{}> = () => {
   const history = useHistory()
   const { clearSession } = useContext(AuthContext)
-  const { user, defaultIdentity: identity, messages } = useContext(AppContext)
+  const {
+    user,
+    defaultIdentity: identity,
+    messages,
+    messagesLoading,
+  } = useContext(AppContext)
 
   const logOut = () => {
     clearSession()
@@ -28,12 +34,14 @@ const Dashboard: React.FC<{}> = () => {
       <Heading as="h1">
         <b>Activity</b>
       </Heading>
-      <Box marginTop={15}></Box>
+      {messagesLoading && <Loader />}
       <Box paddingBottom={10}>
-        {messages ? (
+        {messages &&
+          !messagesLoading &&
           messages?.map((message: any) => {
             return (
               <Box
+                className={'animate__animated animate__fadeIn'}
                 borderRadius={5}
                 padding={10}
                 backgroundColor={'whitesmoke'}
@@ -61,16 +69,7 @@ const Dashboard: React.FC<{}> = () => {
                 </Box>
               </Box>
             )
-          })
-        ) : (
-          <Box>
-            <Box className={'spinner'}>
-              <Box className={'bounce1'}></Box>
-              <Box className={'bounce2'}></Box>
-              <Box className={'bounce3'}></Box>
-            </Box>
-          </Box>
-        )}
+          })}
       </Box>
     </Box>
   )

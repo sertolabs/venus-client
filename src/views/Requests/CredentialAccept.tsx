@@ -32,32 +32,29 @@ const Request: React.FC<{}> = () => {
       display={'flex'}
       flex={1}
       flexDirection={'column'}
-      alignItems={'center'}
       paddingBottom={20}
+      paddingLeft={20}
+      paddingRight={20}
+      justifyContent={'space-between'}
     >
-      <Box height={40}></Box>
       <Heading as="h1">
-        <b>Request!</b>
+        <b>Save Credential</b>
       </Heading>
 
-      {!saving && request?.message && (
-        <Box padding={15}>
-          <Box display={'flex'} alignItems={'center'} flexDirection={'column'}>
-            <Text>Request type: {request?.message?.type}</Text>
-            <Text className={'break-word'}>
-              <b>xyz</b> has issued you a credential. Would you like to save it?
-            </Text>
-          </Box>
-          <Box>
-            <Box>
-              <Credential vc={request?.message?.payload.verifiableCredential} />
-            </Box>
-          </Box>
-        </Box>
-      )}
+      <Box flex={1}>
+        <Text className={'break-word'}>
+          <span style={{ color: 'darkcyan' }}>{request?.sender.origin} </span>
+          has issued you a credential. Would you like to save it?
+        </Text>
 
-      {saving && <Loader />}
+        {!saving && request?.message && (
+          <Box marginTop={20}>
+            <Credential vc={request?.message?.payload.verifiableCredential} />
+          </Box>
+        )}
 
+        {saving && <Loader />}
+      </Box>
       {request?.message && (
         <Box
           marginTop={30}

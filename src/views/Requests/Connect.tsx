@@ -19,46 +19,40 @@ const Request: React.FC<{}> = () => {
     respond({ action: 'REJECT' })
   }
 
-  const requestedItems = () => {
-    return (
-      <ul>
-        {request?.message?.payload?.request?.map((item: string) => {
-          return <li>{item}</li>
-        })}
-      </ul>
-    )
-  }
-
   return (
     <Box
       display={'flex'}
       flex={1}
       flexDirection={'column'}
-      alignItems={'center'}
       paddingBottom={20}
+      paddingLeft={20}
+      paddingRight={20}
+      justifyContent={'space-between'}
     >
-      <Box height={40}></Box>
       <Heading as="h1">
-        <b>Request!</b>
+        <b>Connect</b>
       </Heading>
 
-      {request?.message && (
-        <Box padding={15}>
-          <Box>
-            <Text>Request type: {request?.message?.type}</Text>
-            <Text>Requested: {requestedItems()} </Text>
-          </Box>
-          <Box>
-            <Text as={'p'}>You are sharing your identifier with bluuurup</Text>
-            {identity && (
-              <Text as={'p'} className={'break-word'}>
-                {identity.did}
-              </Text>
-            )}
-          </Box>
-        </Box>
-      )}
+      <Box flex={1}>
+        <Text>
+          <span style={{ color: 'darkcyan' }}>{request?.sender.origin}</span> is
+          requesting access to your identifier.
+        </Text>
 
+        {identity?.did && (
+          <Box
+            padding={15}
+            marginTop={5}
+            backgroundColor={'#333333'}
+            borderRadius={10}
+            className={'animate__animated animate__fadeIn'}
+          >
+            <Text color={'white'} className={'break-word'}>
+              <code>{identity?.did}</code>
+            </Text>
+          </Box>
+        )}
+      </Box>
       {request?.message && (
         <Box
           marginTop={30}
