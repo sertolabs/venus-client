@@ -11,7 +11,9 @@ import { sendAuthResponse } from '../services/extension'
 export const AppContext = createContext({} as AppState)
 
 const AppProvider: React.FC<{}> = ({ children }) => {
-  const { session, tenantId, setSession, setTenantId } = useContext(AuthContext)
+  const { session, tenantId, setSession, clearSession } = useContext(
+    AuthContext,
+  )
   const [user, setUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [defaultIdentity, setDefaultIdentity] = useState<any>()
@@ -175,6 +177,11 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }
 
+  const logout = () => {
+    clearSession()
+    setUser(false)
+  }
+
   useEffect(() => {
     if (session) {
       getUser(session.id_token)
@@ -197,6 +204,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     <AppContext.Provider
       value={{
         user,
+        logout,
         loadingUser: loading,
         defaultIdentity,
         messages,

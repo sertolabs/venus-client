@@ -14,13 +14,13 @@ import Navbar from '../components/Navbar'
 import isChromeRuntime from '../utils/isChrome'
 
 export const App: React.FC<{}> = ({}) => {
-  const { user } = useContext(AppContext)
+  const { user, logout } = useContext(AppContext)
   const { request } = useContext(RequestContext)
   const hasRequest = user && request
 
   const PROD = (
     <>
-      <Header />
+      <Header logout={user && logout} />
       <Page>
         <Router>
           {hasRequest && <Redirect to={'/request'} />}
@@ -38,7 +38,7 @@ export const App: React.FC<{}> = ({}) => {
 
   const DEV = (
     <>
-      <Header />
+      <Header logout={user && logout} />
       <Page>
         <Router>
           <Navbar />

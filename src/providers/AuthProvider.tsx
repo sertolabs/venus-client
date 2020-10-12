@@ -35,8 +35,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  const clearStorage = () => {
+  const clearSession = () => {
     storage.clear()
+
+    saveSession(undefined)
+    saveTenantId(' ')
   }
 
   useEffect(() => {
@@ -53,7 +56,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setEmail,
         setSession,
         setTenantId,
-        clearSession: clearStorage,
+        clearSession,
       }}
     >
       {children}
