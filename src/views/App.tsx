@@ -20,7 +20,7 @@ export const App: React.FC<{}> = ({}) => {
 
   const PROD = (
     <>
-      <Header logout={user && logout} />
+      <Header logout={!request && user && logout} />
       <Page>
         <Router>
           {hasRequest && <Redirect to={'/request'} />}
@@ -38,7 +38,7 @@ export const App: React.FC<{}> = ({}) => {
 
   const DEV = (
     <>
-      <Header logout={user && logout} />
+      <Header logout={!request && user && logout} />
       <Page>
         <Router>
           <Navbar />
