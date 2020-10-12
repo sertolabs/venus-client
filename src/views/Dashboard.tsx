@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Heading, Text, Button, Flex } from 'rimble-ui'
 import { AuthContext } from '../providers/AuthProvider'
@@ -7,20 +7,13 @@ import Loader from '../components/Loader'
 
 const Dashboard: React.FC<{}> = () => {
   const history = useHistory()
-  const { clearSession } = useContext(AuthContext)
-  const {
-    user,
-    defaultIdentity: identity,
-    messages,
-    messagesLoading,
-  } = useContext(AppContext)
+  const { messages, messagesLoading, user } = useContext(AppContext)
 
-  const logOut = () => {
-    clearSession()
-    history.replace('/')
-  }
-
-  console.log(messages)
+  useEffect(() => {
+    if (!user) {
+      history.replace('/')
+    }
+  }, [user])
 
   return (
     <Box

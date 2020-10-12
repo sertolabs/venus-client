@@ -14,6 +14,7 @@ export interface AppState {
   defaultIdentity: any
   messages: any[]
   messagesLoading: boolean
+  logout: () => void
   sendCode: (email: string) => any
   verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>

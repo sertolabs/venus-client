@@ -1,7 +1,11 @@
 import React from 'react'
-import { Box } from 'rimble-ui'
+import { Box, Button } from 'rimble-ui'
 
-const Header: React.FC<{}> = () => {
+interface HeaderProps {
+  logout?: () => void
+}
+
+const Header: React.FC<HeaderProps> = ({ logout }) => {
   return (
     <Box height={65} id={'header'} backgroundColor={'whitesmoke'}>
       <Box
@@ -18,6 +22,15 @@ const Header: React.FC<{}> = () => {
           borderRadius={25}
           backgroundColor={'lightgrey'}
         ></Box>
+        {logout && (
+          <Button
+            className={'animate__animated animate__fadeIn'}
+            icononly
+            icon={'NavigateNext'}
+            onClick={logout}
+            mainColor="#adadad"
+          />
+        )}
       </Box>
     </Box>
   )
