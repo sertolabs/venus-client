@@ -29,7 +29,7 @@ When activated the extention will inject a ascript onto the users webpage under 
 For Trust Agency custodial DIDs you can authenticate by passing in the session token and tenantId
 
 ```js
-const auth = await idWallet.authenticate({id_token: '<TOKEN>'}, '<TENANT_ID>'})
+const auth = await idWallet.authenticate('<TOKEN>', '<TENANT_ID>'})
 ```
 
 ### `connect`

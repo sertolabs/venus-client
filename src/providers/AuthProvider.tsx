@@ -1,18 +1,22 @@
 import React, { useState, createContext, useEffect } from 'react'
 import { AuthProviderProps, AuthState } from '../types'
-import { Auth0Session } from '../types'
 import storage from '../utils/storage'
 
 export const AuthContext = createContext({} as AuthState)
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [email, setEmail] = useState<string>()
-  const [session, saveSession] = useState<Auth0Session | undefined>()
-  const [tenantId, saveTenantId] = useState<string>()
+  const [token, saveToken] = useState<string | null | undefined>()
+  const [tenantId, saveTenantId] = useState<string | null | undefined>()
+  const [ssiEnabled, saveSsiEnabled] = useState(false)
 
-  const setSession = (session: Auth0Session) => {
-    storage.saveItem('session', session)
-    saveSession(session)
+  const setSsiEnabled = (enabled: boolean) => {
+    storage.saveItem('ssi', enabled)
+    saveSsiEnabled(enabled)
+  }
+
+  const setToken = (token: string) => {
+    storage.saveItem('token', token)
+    saveToken(token)
   }
 
   const setTenantId = (tenantId: string) => {
@@ -20,43 +24,50 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     saveTenantId(tenantId)
   }
 
-  const getSessionFromStorage = async () => {
-    const session: any = await storage.getItem('session')
-    if (session) {
-      saveSession(session)
+  const getTokenFromStorage = async () => {
+    const token: any = await storage.getItem('token')
+    if (token) {
+      saveToken(token)
     }
   }
 
   const getTenantIdFromStorage = async () => {
     const tenantId: any = await storage.getItem('tenantId')
-    console.log(tenantId)
     if (tenantId) {
       saveTenantId(tenantId)
+    }
+  }
+
+  const getSsiEnabledFlagFromStorage = async () => {
+    const enabled: any = await storage.getItem('ssi')
+    if (enabled !== undefined) {
+      saveSsiEnabled(enabled)
     }
   }
 
   const clearSession = () => {
     storage.clear()
 
-    saveSession(undefined)
-    saveTenantId(' ')
+    saveToken(null)
+    saveTenantId(null)
   }
 
   useEffect(() => {
-    getSessionFromStorage()
+    getTokenFromStorage()
     getTenantIdFromStorage()
+    getSsiEnabledFlagFromStorage()
   }, [])
 
   return (
     <AuthContext.Provider
       value={{
-        session,
+        token,
         tenantId,
-        email,
-        setEmail,
-        setSession,
+        ssiEnabled,
+        setToken,
         setTenantId,
         clearSession,
+        setSsiEnabled,
       }}
     >
       {children}

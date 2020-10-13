@@ -1,10 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 import { MemoryRouter as Router, Route, Redirect } from 'react-router-dom'
-import { AuthContext } from '../providers/AuthProvider'
 import { RequestContext } from '../providers/RequestProvider'
 import { AppContext } from '../providers/AppProvider'
 import Auth from './Auth'
-import Verify from './Verify'
 import Header from '../components/Header'
 import Page from '../components/Page'
 import Dashboard from './Dashboard'
@@ -27,7 +25,6 @@ export const App: React.FC<{}> = ({}) => {
           {user && !request && <Redirect to={'/dashboard'} />}
           {user && !request && <Navbar />}
           <Route path={'/'} component={Auth} exact />
-          <Route path={'/verify'} component={Verify} />
           <Route path={'/request'} component={Request} />
           <Route path={'/dashboard'} component={Dashboard} />
           <Route path={'/credentials'} component={Credentials} />
@@ -43,7 +40,6 @@ export const App: React.FC<{}> = ({}) => {
         <Router>
           <Navbar />
           <Route path={'/'} component={Credentials} exact />
-          <Route path={'/verify'} component={Verify} />
           <Route path={'/request'} component={Request} />
           <Route path={'/dashboard'} component={Dashboard} />
           <Route path={'/credentials'} component={Credentials} />

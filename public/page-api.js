@@ -3,11 +3,11 @@ window.idWallet = {
     version: '1.0.0',
     name: 'Trust Agency',
   },
-  authenticate: async (session, tenantId) => {
+  authenticate: async (token, tenantId) => {
     window.postMessage({
       source: 'TRUST_AGENT_ID_WALLET',
       type: 'AUTH_REQUEST',
-      payload: { session, tenantId },
+      payload: { token, tenantId },
     })
     return new Promise((resolve, reject) => {
       window.addEventListener('message', (event) => {

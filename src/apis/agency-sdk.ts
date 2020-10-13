@@ -1,4 +1,12 @@
 import request from '../utils/request'
+import * as Daf from './daf'
+
+const createAuthHeaders = (token: string, tenantId: string) => {
+  return {
+    authorization: `Bearer ${token}`,
+    tenantId,
+  }
+}
 
 const createUser = async (endpoint: string, token: string) => {
   return await request(endpoint, {
@@ -23,13 +31,10 @@ const identityManagerGetIdentities = async (
   token: string,
   tenantId: string,
 ) => {
-  return await request(endpoint + '/identityManagerGetIdentities', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-  })
+  return await Daf.identityManagerGetIdentities(
+    endpoint,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const identityManagerGetOrCreateIdentity = async (
@@ -37,13 +42,10 @@ const identityManagerGetOrCreateIdentity = async (
   token: string,
   tenantId: string,
 ) => {
-  return await request(endpoint, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-  })
+  return await Daf.identityManagerGetOrCreateIdentity(
+    endpoint,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const createVerifiableCredential = async (
@@ -56,30 +58,11 @@ const createVerifiableCredential = async (
   token: string,
   tenantId: string,
 ) => {
-  const credential = {
-    credential: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      type: ['VerifiableCredential'],
-      issuer: createCredential.issuer,
-      issuanceDate: new Date().toISOString(),
-      credentialSubject: {
-        id: createCredential.subject,
-        ...createCredential.claims,
-      },
-    },
-    save: true,
-  }
-
-  return await request(endpoint + '/createVerifiableCredential', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-    body: JSON.stringify(credential),
-  })
+  return await Daf.createVerifiableCredential(
+    endpoint,
+    createCredential,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const dataStoreORMGetVerifiableCredentials = async (
@@ -88,16 +71,11 @@ const dataStoreORMGetVerifiableCredentials = async (
   token: string,
   tenantId: string,
 ) => {
-  return await request(endpoint + '/dataStoreORMGetVerifiableCredentials', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-    body: JSON.stringify(query),
-  })
+  return await Daf.dataStoreORMGetVerifiableCredentials(
+    endpoint,
+    query,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const handleMessage = async (
@@ -106,20 +84,11 @@ const handleMessage = async (
   token: string,
   tenantId: string,
 ) => {
-  console.group('Endpoint log...')
-  console.log(endpoint, raw, token, tenantId)
-  console.group('Endpoint log...')
-
-  return await request(endpoint + '/handleMessage', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      tenantId,
-    },
-    body: JSON.stringify({ raw, save: true }),
-  })
+  return await Daf.handleMessage(
+    endpoint,
+    raw,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const dataStoreORMGetMessages = async (
@@ -128,16 +97,11 @@ const dataStoreORMGetMessages = async (
   token: string,
   tenantId: string,
 ) => {
-  return await request(endpoint + '/dataStoreORMGetMessages', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-    body: JSON.stringify(query),
-  })
+  return await Daf.dataStoreORMGetMessages(
+    endpoint,
+    query,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const getVerifiableCredentialsForSdr = async (
@@ -146,16 +110,11 @@ const getVerifiableCredentialsForSdr = async (
   token: string,
   tenantId: string,
 ) => {
-  return await request(endpoint + '/getVerifiableCredentialsForSdr', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-    body: JSON.stringify({ sdr }),
-  })
+  return await Daf.getVerifiableCredentialsForSdr(
+    endpoint,
+    sdr,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 const createVerifiablePresentation = async (
@@ -168,28 +127,11 @@ const createVerifiablePresentation = async (
   token: string,
   tenantId: string,
 ) => {
-  const presentation = {
-    presentation: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      type: ['VerifiablePresentation'],
-      holder: verifiablePresentation.issuer.did,
-      audience: verifiablePresentation.audience,
-      issuanceDate: new Date().toISOString(),
-      verifiableCredential: verifiablePresentation.credentials,
-    },
-    save: true,
-  }
-
-  return await request(endpoint + '/createVerifiablePresentation', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-      tenantId: tenantId,
-    },
-    body: JSON.stringify(presentation),
-  })
+  return await Daf.createVerifiablePresentation(
+    endpoint,
+    verifiablePresentation,
+    createAuthHeaders(token, tenantId),
+  )
 }
 
 export {

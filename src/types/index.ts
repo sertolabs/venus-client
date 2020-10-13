@@ -1,13 +1,5 @@
 export interface AuthProviderProps {}
 
-export interface Auth0Session {
-  access_token: string
-  expires_in: number
-  id_token: string
-  scope: string
-  token_type: string
-}
-
 export interface AppState {
   user: any
   loadingUser: boolean
@@ -15,8 +7,6 @@ export interface AppState {
   messages: any[]
   messagesLoading: boolean
   logout: () => void
-  sendCode: (email: string) => any
-  verifyCode: (email: string, code: string) => any
   getUser: (id_token: string) => Promise<any>
   createCredential: (name: string) => Promise<any>
   getCredentials: () => Promise<any>
@@ -26,13 +16,13 @@ export interface AppState {
 }
 
 export interface AuthState {
-  session: Auth0Session | undefined
-  tenantId: string | undefined
-  email: string | undefined
-  setEmail: (email: string) => void
-  setSession: (token: Auth0Session) => void
+  token: string | null | undefined
+  tenantId: string | null | undefined
+  ssiEnabled: boolean
+  setToken: (token: string) => void
   setTenantId: (id: string) => void
   clearSession: () => void
+  setSsiEnabled: (enabled: boolean) => void
 }
 
 export interface RequestState {
