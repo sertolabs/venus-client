@@ -14,9 +14,9 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
   console.log('> message from background', message.type)
 
   if (message.type === 'AUTH_REQUEST') {
-    const { session, tenantId } = message.payload
+    const { token, tenantId } = message.payload
 
-    chrome.storage.local.set({ session, tenantId })
+    chrome.storage.local.set({ token, tenantId })
   }
 
   if (

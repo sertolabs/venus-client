@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Auth, Agency as sdk } from '../apis'
+import { Agency as sdk } from '../apis'
 import { AuthContext } from './AuthProvider'
 import { AppState } from '../types'
 import { ENDPOINTS } from '../env'
@@ -11,34 +11,37 @@ import { sendAuthResponse } from '../services/extension'
 export const AppContext = createContext({} as AppState)
 
 const AppProvider: React.FC<{}> = ({ children }) => {
-  const { session, tenantId, setSession, clearSession } = useContext(
-    AuthContext,
-  )
+  const { token, tenantId, ssiEnabled, clearSession } = useContext(AuthContext)
   const [user, setUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [defaultIdentity, setDefaultIdentity] = useState<any>()
   const [messages, setMessages] = useState<any[]>([])
   const [messagesLoading, setMessagesLoading] = useState(false)
+  const [envConfig, setEnvConfig] = useState({
+    custody: { root: 'alpha.consensysidentity.com' },
+    ssi: { root: '' },
+  })
+  const _envConfig = envConfig[ssiEnabled ? 'ssi' : 'custody']
 
-  const sendCode = async (email: string) => {
-    const ep = `https://dev-mdazdke4.us.auth0.com/passwordless/start`
-    return await Auth.sendCode(ep, email)
+  const conditions = {
+    basicCustody: token && tenantId,
+    custodyWithDefaultIentity: token && tenantId && defaultIdentity,
+    ssi: ssiEnabled && envConfig.ssi.root,
   }
 
-  const verifyCode = async (email: string, code: string) => {
-    const ep = 'https://dev-mdazdke4.us.auth0.com/oauth/token'
-    const newSession = await Auth.verifyCode(ep, email, code)
-    setSession(newSession)
-    return newSession
-  }
-
-  const createUser = async () => {
-    const ep = `${ENDPOINTS.VERSION}/users/signup`
-    return session && (await sdk.createUser(ep, session.id_token))
+  const updateEnvironmentConfigs = (url: string, type: 'custody' | 'ssi') => {
+    setEnvConfig((e) => {
+      return {
+        ...e,
+        [type]: {
+          root: url,
+        },
+      }
+    })
   }
 
   const getUser = async (idToken: string) => {
-    const ep = `${ENDPOINTS.VERSION}/users/currentUser`
+    const ep = `${ENDPOINTS(_envConfig).VERSION}/users/currentUser`
     try {
       setLoading(true)
       const user = idToken && (await sdk.getUser(ep, idToken))
@@ -52,15 +55,6 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       })
       return user
     } catch (error) {
-      if (error.status === 500) {
-        setLoading(true)
-        const newUser = await createUser()
-        setUser(newUser)
-        // setTenantId(newUser.tenants[0].Tenant_id)
-        setLoading(false)
-        return newUser
-      }
-
       if (error.status === 401) {
         setLoading(false)
         sendAuthResponse({
@@ -73,11 +67,11 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }
 
   const getDefaultIdentity = async () => {
-    if (session && tenantId) {
+    if (token && tenantId) {
       try {
         const identities = await sdk.identityManagerGetIdentities(
-          ENDPOINTS.AGENT,
-          session.id_token,
+          ENDPOINTS(_envConfig).AGENT,
+          token,
           tenantId,
         )
 
@@ -87,24 +81,24 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }
 
   const createCredential = async (name: string) => {
-    if (session && tenantId && defaultIdentity) {
+    if (token && tenantId && defaultIdentity) {
       return await sdk.createVerifiableCredential(
-        ENDPOINTS.AGENT,
+        ENDPOINTS(_envConfig).AGENT,
         {
           issuer: { id: defaultIdentity.did },
           subject: defaultIdentity.did,
           claims: { name },
         },
-        session.id_token,
+        token,
         tenantId,
       )
     }
   }
 
   const getCredentials = async () => {
-    if (session && tenantId && defaultIdentity) {
+    if (token && tenantId && defaultIdentity) {
       return await sdk.dataStoreORMGetVerifiableCredentials(
-        ENDPOINTS.AGENT,
+        ENDPOINTS(_envConfig).AGENT,
         {
           where: [
             {
@@ -114,38 +108,32 @@ const AppProvider: React.FC<{}> = ({ children }) => {
           ],
           order: [{ column: 'issuanceDate', direction: 'DESC' }],
         },
-        session.id_token,
+        token,
         tenantId,
       )
     }
   }
 
   const handleMessage = async (jwt: string) => {
-    if (session && tenantId) {
+    if (token && tenantId) {
       return await sdk.handleMessage(
-        ENDPOINTS.AGENT,
+        ENDPOINTS(_envConfig).AGENT,
         jwt,
-        session.id_token,
+        token,
         tenantId,
       )
     }
   }
 
   const getMessages = async () => {
-    if (session && tenantId && defaultIdentity) {
+    if (token && tenantId && defaultIdentity) {
       setMessagesLoading(true)
       const messages = await sdk.dataStoreORMGetMessages(
-        ENDPOINTS.AGENT,
+        ENDPOINTS(_envConfig).AGENT,
         {
-          // where: [
-          //   {
-          //     column: 'to',
-          //     value: [defaultIdentity.did],
-          //   },
-          // ],
-          // order: [{ column: 'issuanceDate', direction: 'DESC' }],
+          // where: [{}]
         },
-        session.id_token,
+        token,
         tenantId,
       )
       if (messages) {
@@ -156,22 +144,22 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }
 
   const getRequestedCredentials = async (sdr: any) => {
-    if (session && tenantId && defaultIdentity) {
+    if (token && tenantId && defaultIdentity) {
       return await sdk.getVerifiableCredentialsForSdr(
-        ENDPOINTS.AGENT,
+        ENDPOINTS(_envConfig).AGENT,
         sdr,
-        session.id_token,
+        token,
         tenantId,
       )
     }
   }
 
   const createVerifiablePresentation = async (verifiablePresentation: any) => {
-    if (session && tenantId && defaultIdentity) {
+    if (token && tenantId && defaultIdentity) {
       return sdk.createVerifiablePresentation(
-        ENDPOINTS.AGENT,
+        ENDPOINTS(_envConfig).AGENT,
         verifiablePresentation,
-        session.id_token,
+        token,
         tenantId,
       )
     }
@@ -183,19 +171,19 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }
 
   useEffect(() => {
-    if (session) {
-      getUser(session.id_token)
+    if (token) {
+      getUser(token)
     }
-  }, [session])
+  }, [token])
 
   useEffect(() => {
-    if (session) {
+    if (token) {
       getDefaultIdentity()
     }
   }, [user])
 
   useEffect(() => {
-    if (session) {
+    if (token) {
       getMessages()
     }
   }, [defaultIdentity])
@@ -209,8 +197,6 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         defaultIdentity,
         messages,
         messagesLoading,
-        sendCode,
-        verifyCode,
         getUser,
         createCredential,
         getCredentials,

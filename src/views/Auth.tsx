@@ -1,22 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Box, Heading, Text, Button, Input } from 'rimble-ui'
+import React, { useContext } from 'react'
+import { Box, Heading, Text } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
-import { AuthContext } from '../providers/AuthProvider'
-import { useHistory } from 'react-router-dom'
 
 const Auth: React.FC<{}> = () => {
-  const { email, setEmail } = useContext(AuthContext)
-  const { sendCode, loadingUser } = useContext(AppContext)
-  const history = useHistory()
-
-  const sendEmailCode = async (email: string) => {
-    const code = await sendCode(email)
-
-    if (code) {
-      console.log('OTP Code', code)
-      history.push(`/verify`)
-    }
-  }
+  const { loadingUser } = useContext(AppContext)
 
   return (
     <Box
