@@ -6,6 +6,8 @@ export interface AppState {
   defaultIdentity: any
   messages: any[]
   messagesLoading: boolean
+  ssiMode: boolean
+  setSSIMode: (enable: boolean) => void
   logout: () => void
   getUser: (id_token: string) => Promise<any>
   createCredential: (name: string) => Promise<any>
@@ -18,17 +20,25 @@ export interface AppState {
 export interface AuthState {
   token: string | null | undefined
   tenantId: string | null | undefined
-  ssiEnabled: boolean
+  ssiConfig: ProviderConfigs
+  trustAgentConfig: ProviderConfigs
   setToken: (token: string) => void
   setTenantId: (id: string) => void
   clearSession: () => void
-  setSsiEnabled: (enabled: boolean) => void
+  setSSIConfig: (config: ProviderConfigs) => void
+  setTrustAgentConfig: (config: ProviderConfigs) => void
 }
 
 export interface RequestState {
   request: ExtensionRequest | null
   clearRequest: () => void
   respond: (payload: any) => void
+}
+
+export interface ProviderConfigs {
+  root: string
+  agent: string
+  enabled: boolean
 }
 
 export interface ExtensionRequest {

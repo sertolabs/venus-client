@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Agency as sdk } from '../apis'
+import { Agency as sdk, Daf } from '../apis'
 import { AuthContext } from './AuthProvider'
 import { AppState } from '../types'
 import { ENDPOINTS } from '../env'
@@ -11,37 +11,25 @@ import { sendAuthResponse } from '../services/extension'
 export const AppContext = createContext({} as AppState)
 
 const AppProvider: React.FC<{}> = ({ children }) => {
-  const { token, tenantId, ssiEnabled, clearSession } = useContext(AuthContext)
+  const {
+    token,
+    tenantId,
+    ssiConfig,
+    trustAgentConfig,
+    clearSession,
+  } = useContext(AuthContext)
   const [user, setUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [defaultIdentity, setDefaultIdentity] = useState<any>()
   const [messages, setMessages] = useState<any[]>([])
   const [messagesLoading, setMessagesLoading] = useState(false)
-  const [envConfig, setEnvConfig] = useState({
-    custody: { root: 'alpha.consensysidentity.com' },
-    ssi: { root: '' },
-  })
-  const _envConfig = envConfig[ssiEnabled ? 'ssi' : 'custody']
+  const [ssiMode, setSSIMode] = useState(ssiConfig.enabled)
 
-  const conditions = {
-    basicCustody: token && tenantId,
-    custodyWithDefaultIentity: token && tenantId && defaultIdentity,
-    ssi: ssiEnabled && envConfig.ssi.root,
-  }
-
-  const updateEnvironmentConfigs = (url: string, type: 'custody' | 'ssi') => {
-    setEnvConfig((e) => {
-      return {
-        ...e,
-        [type]: {
-          root: url,
-        },
-      }
-    })
-  }
-
+  /**
+   * Get user is a Trust Agent specific endpoint
+   */
   const getUser = async (idToken: string) => {
-    const ep = `${ENDPOINTS(_envConfig).VERSION}/users/currentUser`
+    const ep = `${ENDPOINTS(trustAgentConfig).VERSION}/users/currentUser`
     try {
       setLoading(true)
       const user = idToken && (await sdk.getUser(ep, idToken))
@@ -67,23 +55,35 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }
 
   const getDefaultIdentity = async () => {
-    if (token && tenantId) {
-      try {
+    try {
+      if (!ssiMode && token && tenantId) {
         const identities = await sdk.identityManagerGetIdentities(
-          ENDPOINTS(_envConfig).AGENT,
+          ENDPOINTS(trustAgentConfig).AGENT,
           token,
           tenantId,
         )
 
-        setDefaultIdentity(identities[0])
-      } catch (err) {}
-    }
+        if (identities.length > 0) {
+          setDefaultIdentity(identities[0])
+        }
+      }
+
+      if (ssiMode) {
+        const identities = await Daf.identityManagerGetIdentities(
+          ENDPOINTS(ssiConfig).BASE_AGENT,
+        )
+
+        if (identities.length > 0) {
+          setDefaultIdentity(identities[0])
+        }
+      }
+    } catch (err) {}
   }
 
   const createCredential = async (name: string) => {
-    if (token && tenantId && defaultIdentity) {
+    if (!ssiMode && token && tenantId && defaultIdentity) {
       return await sdk.createVerifiableCredential(
-        ENDPOINTS(_envConfig).AGENT,
+        ENDPOINTS(trustAgentConfig).AGENT,
         {
           issuer: { id: defaultIdentity.did },
           subject: defaultIdentity.did,
@@ -93,12 +93,23 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         tenantId,
       )
     }
+
+    if (ssiMode) {
+      return await Daf.createVerifiableCredential(
+        ENDPOINTS(ssiConfig).BASE_AGENT,
+        {
+          issuer: { id: defaultIdentity.did },
+          subject: defaultIdentity.did,
+          claims: { name },
+        },
+      )
+    }
   }
 
   const getCredentials = async () => {
-    if (token && tenantId && defaultIdentity) {
+    if (!ssiMode && token && tenantId && defaultIdentity) {
       return await sdk.dataStoreORMGetVerifiableCredentials(
-        ENDPOINTS(_envConfig).AGENT,
+        ENDPOINTS(trustAgentConfig).AGENT,
         {
           where: [
             {
@@ -112,24 +123,37 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         tenantId,
       )
     }
+
+    if (ssiMode) {
+      return await Daf.dataStoreORMGetVerifiableCredentials(
+        ENDPOINTS(ssiConfig).BASE_AGENT,
+        {
+          order: [{ column: 'issuanceDate', direction: 'DESC' }],
+        },
+      )
+    }
   }
 
   const handleMessage = async (jwt: string) => {
-    if (token && tenantId) {
+    if (!ssiMode && token && tenantId) {
       return await sdk.handleMessage(
-        ENDPOINTS(_envConfig).AGENT,
+        ENDPOINTS(trustAgentConfig).AGENT,
         jwt,
         token,
         tenantId,
       )
     }
+
+    if (ssiMode) {
+      return await Daf.handleMessage(ENDPOINTS(ssiConfig).BASE_AGENT, jwt)
+    }
   }
 
   const getMessages = async () => {
-    if (token && tenantId && defaultIdentity) {
+    if (!ssiMode && token && tenantId && defaultIdentity) {
       setMessagesLoading(true)
       const messages = await sdk.dataStoreORMGetMessages(
-        ENDPOINTS(_envConfig).AGENT,
+        ENDPOINTS(trustAgentConfig).AGENT,
         {
           // where: [{}]
         },
@@ -141,26 +165,54 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         setMessages(messages)
       }
     }
+
+    if (ssiMode) {
+      setMessagesLoading(true)
+      const messages = await Daf.dataStoreORMGetMessages(
+        ENDPOINTS(ssiConfig).BASE_AGENT,
+        {
+          // where: [{}]
+        },
+      )
+      if (messages) {
+        setMessagesLoading(false)
+        setMessages(messages)
+      }
+    }
   }
 
   const getRequestedCredentials = async (sdr: any) => {
-    if (token && tenantId && defaultIdentity) {
+    if (!ssiMode && token && tenantId && defaultIdentity) {
       return await sdk.getVerifiableCredentialsForSdr(
-        ENDPOINTS(_envConfig).AGENT,
+        ENDPOINTS(trustAgentConfig).AGENT,
         sdr,
         token,
         tenantId,
       )
     }
+
+    if (ssiMode) {
+      return await Daf.getVerifiableCredentialsForSdr(
+        ENDPOINTS(ssiConfig).BASE_AGENT,
+        sdr,
+      )
+    }
   }
 
   const createVerifiablePresentation = async (verifiablePresentation: any) => {
-    if (token && tenantId && defaultIdentity) {
+    if (!ssiMode && token && tenantId && defaultIdentity) {
       return sdk.createVerifiablePresentation(
-        ENDPOINTS(_envConfig).AGENT,
+        ENDPOINTS(trustAgentConfig).AGENT,
         verifiablePresentation,
         token,
         tenantId,
+      )
+    }
+
+    if (ssiMode) {
+      return Daf.createVerifiablePresentation(
+        ENDPOINTS(ssiConfig).BASE_AGENT,
+        verifiablePresentation,
       )
     }
   }
@@ -177,7 +229,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }, [token])
 
   useEffect(() => {
-    if (token) {
+    if (token || ssiMode) {
       getDefaultIdentity()
     }
   }, [user])
@@ -186,17 +238,23 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     if (token) {
       getMessages()
     }
-  }, [defaultIdentity])
+  }, [defaultIdentity, ssiMode])
+
+  useEffect(() => {
+    setSSIMode(ssiConfig.enabled)
+  }, [ssiConfig])
 
   return (
     <AppContext.Provider
       value={{
         user,
-        logout,
         loadingUser: loading,
         defaultIdentity,
         messages,
         messagesLoading,
+        ssiMode,
+        logout,
+        setSSIMode,
         getUser,
         createCredential,
         getCredentials,

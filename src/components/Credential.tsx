@@ -8,7 +8,6 @@ interface CredentialProps {
 }
 
 const Credential: React.FC<CredentialProps> = ({ vc, selected, onClick }) => {
-  console.log(vc)
   return (
     <Box
       onClick={onClick}

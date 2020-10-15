@@ -1,3 +1,5 @@
+import { Agent } from 'http'
+
 const ENV = {
   BASE: 'https://alpha.consensysidentity.com',
   VERSION: '/v1',
@@ -26,17 +28,20 @@ const ENV = {
 
 const SOURCE_TYPE = 'TRUST_AGENT_ID_WALLET'
 
-const ENDPOINTS = (config: { root: string }) => {
+const ENDPOINTS = (config: { root: string; agent: string }) => {
+  const PROTOCOL =
+    config.root && config.root.startsWith('localhost') ? 'http' : 'https'
   const ENV = {
-    BASE: `https://${config.root}`,
+    BASE: `${PROTOCOL}://${config.root}`,
     VERSION: '/v1',
     TENANT: '/tenant',
     FEEDS: '/feeds',
     SCHEMAS: '/schemas',
-    AGENT: '/agent',
+    AGENT: config.agent,
   }
   return {
     BASE: ENV.BASE,
+    BASE_AGENT: ENV.BASE + ENV.AGENT,
     VERSION: ENV.BASE + ENV.VERSION,
     TENANT: ENV.BASE + ENV.VERSION + ENV.TENANT,
     AGENT: ENV.BASE + ENV.VERSION + ENV.TENANT + ENV.AGENT,

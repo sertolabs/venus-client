@@ -29,6 +29,14 @@ const Navbar: React.FC<{}> = () => {
       >
         <Link to={'/credentials'}>Credentials</Link>
       </Box>
+      <Box
+        flex={1}
+        justifyContent={'center'}
+        display={'flex'}
+        flexDirection={'row'}
+      >
+        <Link to={'/settings'}>Settings</Link>
+      </Box>
     </Box>
   )
 }
