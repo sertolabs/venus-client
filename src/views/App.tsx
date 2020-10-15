@@ -8,11 +8,12 @@ import Page from '../components/Page'
 import Dashboard from './Dashboard'
 import Request from './Requests'
 import Credentials from './Credentials'
+import Settings from './Settings'
 import Navbar from '../components/Navbar'
 import isChromeRuntime from '../utils/isChrome'
 
 export const App: React.FC<{}> = ({}) => {
-  const { user, logout } = useContext(AppContext)
+  const { user, logout, ssiMode } = useContext(AppContext)
   const { request } = useContext(RequestContext)
   const hasRequest = user && request
 
@@ -22,12 +23,13 @@ export const App: React.FC<{}> = ({}) => {
       <Page>
         <Router>
           {hasRequest && <Redirect to={'/request'} />}
-          {user && !request && <Redirect to={'/dashboard'} />}
-          {user && !request && <Navbar />}
+          {(user || ssiMode) && !request && <Redirect to={'/dashboard'} />}
+          {(user || ssiMode) && !request && <Navbar />}
           <Route path={'/'} component={Auth} exact />
           <Route path={'/request'} component={Request} />
           <Route path={'/dashboard'} component={Dashboard} />
           <Route path={'/credentials'} component={Credentials} />
+          <Route path={'/settings'} component={Settings} />
         </Router>
       </Page>
     </>
@@ -43,6 +45,7 @@ export const App: React.FC<{}> = ({}) => {
           <Route path={'/request'} component={Request} />
           <Route path={'/dashboard'} component={Dashboard} />
           <Route path={'/credentials'} component={Credentials} />
+          <Route path={'/settings'} component={Settings} />
         </Router>
       </Page>
     </>

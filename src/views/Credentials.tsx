@@ -7,7 +7,6 @@ import Loader from '../components/Loader'
 const Credentials: React.FC<{}> = () => {
   const { createCredential, getCredentials } = useContext(AppContext)
   const [name, setName] = useState<string>()
-  const [credential, setCredential] = useState()
   const [credentials, setCredentials] = useState<any[]>()
   const [credentialsLoading, setCredentialsLoading] = useState(false)
   const [createCredentialLoading, setCreateCredentialLoading] = useState(false)
@@ -73,7 +72,12 @@ const Credentials: React.FC<{}> = () => {
         {credentials && !credentialsLoading && (
           <Box className={'animate__animated animate__fadeIn'}>
             {credentials?.map((vc: any, i: number) => {
-              return <Credential vc={vc} key={i}></Credential>
+              return (
+                <Credential
+                  vc={vc.verifiableCredential || vc}
+                  key={vc.hash || i}
+                ></Credential>
+              )
             })}
           </Box>
         )}

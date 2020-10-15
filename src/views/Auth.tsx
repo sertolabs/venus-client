@@ -35,7 +35,7 @@ const Auth: React.FC<{}> = () => {
           </Heading>
           <Box padding={15}>
             <Text as={'p'} textAlign={'center'}>
-              Visit trust agency and login to autenticate
+              Visit trust agency to authenticate
             </Text>
           </Box>
         </Box>

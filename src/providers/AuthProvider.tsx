@@ -7,11 +7,40 @@ export const AuthContext = createContext({} as AuthState)
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, saveToken] = useState<string | null | undefined>()
   const [tenantId, saveTenantId] = useState<string | null | undefined>()
-  const [ssiEnabled, saveSsiEnabled] = useState(false)
+  const [ssiConfig, saveSSIConfig] = useState({
+    root: 'localhost:3000',
+    agent: '/agent',
+    enabled: true,
+  })
 
-  const setSsiEnabled = (enabled: boolean) => {
-    storage.saveItem('ssi', enabled)
-    saveSsiEnabled(enabled)
+  const [trustAgentConfig, saveTrustAgentConfig] = useState({
+    root: 'alpha.consensysidentity.com',
+    agent: '/agent',
+    enabled: true,
+  })
+
+  const setSSIConfig = (ssiConf: any) => {
+    saveSSIConfig({ ...ssiConf })
+    storage.saveItem('ssi', { ...ssiConf })
+  }
+
+  const setTrustAgentConfig = (trustAgentConf: any) => {
+    saveTrustAgentConfig({ ...trustAgentConf })
+    storage.saveItem('trustAgent', { ...trustAgentConf })
+  }
+
+  const getSSIConfigFromStorage = async () => {
+    const _ssiConfig: any = await storage.getItem('ssi')
+    if (_ssiConfig) {
+      saveSSIConfig(_ssiConfig)
+    }
+  }
+
+  const getTrustAgentConfigFromStorage = async () => {
+    const _trustAgentConfig: any = await storage.getItem('ssi')
+    if (_trustAgentConfig) {
+      saveTrustAgentConfig(_trustAgentConfig)
+    }
   }
 
   const setToken = (token: string) => {
@@ -38,15 +67,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  const getSsiEnabledFlagFromStorage = async () => {
-    const enabled: any = await storage.getItem('ssi')
-    if (enabled !== undefined) {
-      saveSsiEnabled(enabled)
-    }
-  }
-
   const clearSession = () => {
-    storage.clear()
+    storage.removeItem('token')
+    storage.removeItem('tenantId')
 
     saveToken(null)
     saveTenantId(null)
@@ -55,7 +78,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     getTokenFromStorage()
     getTenantIdFromStorage()
-    getSsiEnabledFlagFromStorage()
+    getSSIConfigFromStorage()
+    getTrustAgentConfigFromStorage()
   }, [])
 
   return (
@@ -63,11 +87,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       value={{
         token,
         tenantId,
-        ssiEnabled,
+        ssiConfig,
+        trustAgentConfig,
+        setSSIConfig,
+        setTrustAgentConfig,
         setToken,
         setTenantId,
         clearSession,
-        setSsiEnabled,
       }}
     >
       {children}

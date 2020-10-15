@@ -7,13 +7,13 @@ import Loader from '../components/Loader'
 
 const Dashboard: React.FC<{}> = () => {
   const history = useHistory()
-  const { messages, messagesLoading, user } = useContext(AppContext)
+  const { messages, messagesLoading, user, ssiMode } = useContext(AppContext)
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !ssiMode) {
       history.replace('/')
     }
-  }, [user])
+  }, [user, ssiMode])
 
   return (
     <Box
