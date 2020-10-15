@@ -8,9 +8,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, saveToken] = useState<string | null | undefined>()
   const [tenantId, saveTenantId] = useState<string | null | undefined>()
   const [ssiConfig, saveSSIConfig] = useState({
-    root: 'localhost:3000',
+    root: '',
     agent: '/agent',
-    enabled: true,
+    enabled: false,
   })
 
   const [trustAgentConfig, saveTrustAgentConfig] = useState({
