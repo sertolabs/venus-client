@@ -1,12 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
 import { Box, Heading, Text, Button, Flex, Input, Checkbox } from 'rimble-ui'
 import { AuthContext } from '../providers/AuthProvider'
-import { AppContext } from '../providers/AppProvider'
-import Loader from '../components/Loader'
 
-const Dashboard: React.FC<{}> = () => {
-  const history = useHistory()
+const Settings: React.FC<{}> = () => {
   const { trustAgentConfig, ssiConfig, setSSIConfig } = useContext(AuthContext)
 
   const [ssiURL, setSSIUrl] = useState(ssiConfig.root)
@@ -18,7 +14,6 @@ const Dashboard: React.FC<{}> = () => {
 
   const saveSettings = () => {
     setSSIConfig({ root: ssiURL, agent: ssiAgentUrl, enabled: ssiEnabled })
-    // console.log({ root: ssiURL, agent: ssiAgentUrl, enabled: ssiEnabled })
   }
 
   return (
@@ -69,4 +64,4 @@ const Dashboard: React.FC<{}> = () => {
   )
 }
 
-export default Dashboard
+export default Settings
