@@ -240,6 +240,10 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
   }, [defaultIdentity, ssiMode])
 
+  useEffect(() => {
+    setSSIMode(ssiConfig.enabled)
+  }, [ssiConfig])
+
   return (
     <AppContext.Provider
       value={{

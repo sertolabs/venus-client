@@ -32,12 +32,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const getSSIConfigFromStorage = async () => {
     const _ssiConfig: any = await storage.getItem('ssi')
     if (_ssiConfig) {
+      console.log('> SSI config from storage', _ssiConfig)
       saveSSIConfig(_ssiConfig)
     }
   }
 
   const getTrustAgentConfigFromStorage = async () => {
-    const _trustAgentConfig: any = await storage.getItem('ssi')
+    const _trustAgentConfig: any = await storage.getItem('trustAgent')
     if (_trustAgentConfig) {
       saveTrustAgentConfig(_trustAgentConfig)
     }

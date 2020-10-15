@@ -20,13 +20,13 @@ export interface AppState {
 export interface AuthState {
   token: string | null | undefined
   tenantId: string | null | undefined
-  ssiConfig: SSIConfigs
-  trustAgentConfig: SSIConfigs
+  ssiConfig: ProviderConfigs
+  trustAgentConfig: ProviderConfigs
   setToken: (token: string) => void
   setTenantId: (id: string) => void
   clearSession: () => void
-  setSSIConfig: (root: string, enabled: boolean) => void
-  setTrustAgentConfig: (root: string, enabled: boolean) => void
+  setSSIConfig: (config: ProviderConfigs) => void
+  setTrustAgentConfig: (config: ProviderConfigs) => void
 }
 
 export interface RequestState {
@@ -35,7 +35,7 @@ export interface RequestState {
   respond: (payload: any) => void
 }
 
-export interface SSIConfigs {
+export interface ProviderConfigs {
   root: string
   agent: string
   enabled: boolean
