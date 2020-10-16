@@ -1,7 +1,8 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Box, Heading, Text, Button, Flex, Input, Checkbox } from 'rimble-ui'
 import { AuthContext } from '../providers/AuthProvider'
 import request from '../utils/request'
+import Loader from '../components/Loader'
 
 const Settings: React.FC<{}> = () => {
   const { trustAgentConfig, ssiConfig, setSSIConfig } = useContext(AuthContext)
@@ -34,6 +35,12 @@ const Settings: React.FC<{}> = () => {
     }
   }
 
+  useEffect(() => {
+    if (ssiURL) {
+      validateSSIUrl(ssiURL)
+    }
+  }, [ssiURL])
+
   return (
     <Box
       display={'flex'}
@@ -60,19 +67,26 @@ const Settings: React.FC<{}> = () => {
         </Heading>
         <Flex marginBottom={10}>
           <Input
+            className={SSIUrlValid ? 'validated valid' : 'validated invalid'}
             type={'text'}
             value={ssiURL}
             width={280}
             onChange={(ev: any) => setSSIUrl(ev.target.value)}
-            onBlur={(ev: any) => validateSSIUrl(ev.target.value)}
           />
         </Flex>
-        <Checkbox
-          disabled={!SSIUrlValid || checkingURL}
-          label="Active"
-          checked={ssiEnabled}
-          onClick={() => SSIUrlValid && setSSIEnabled(!ssiEnabled)}
-        />
+        <Flex
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          width={280}
+        >
+          <Checkbox
+            disabled={!SSIUrlValid || checkingURL}
+            label="Active"
+            checked={ssiEnabled}
+            onClick={() => SSIUrlValid && setSSIEnabled(!ssiEnabled)}
+          />
+          {checkingURL && <Loader size={'small'} />}
+        </Flex>
       </Box>
 
       <Box>

@@ -44,11 +44,13 @@ const Auth: React.FC<{}> = () => {
           </Box>
         )}
       </Box>
-      <Box>
-        <Text>
-          <Link to={'/settings'}>Settings</Link>
-        </Text>
-      </Box>
+      {!loadingUser && (
+        <Box>
+          <Text>
+            <Link to={'/settings'}>Settings</Link>
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }

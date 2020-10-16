@@ -65,10 +65,24 @@ code {
     monospace;
 }
 
+.validated.invalid,
+.validated.invalid:focus {
+  border-color: rgb(220, 44, 16);
+}
+
+.validated.valid:focus {
+  border-color: rgb(40, 192, 129);
+}
+
 .spinner {
   margin: 100px auto 0;
   width: 70px;
   text-align: center;
+}
+
+.spinner.small {
+  margin: 3px;
+  width: 50px;
 }
 
 .spinner > div {
@@ -80,6 +94,12 @@ code {
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner.small > div {
+  width: 10px;
+  height: 10px;
+  margin-left: 3px;
 }
 
 .spinner .bounce1 {

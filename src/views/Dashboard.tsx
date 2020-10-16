@@ -1,19 +1,10 @@
-import React, { useContext, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import { Box, Heading, Text, Button, Flex } from 'rimble-ui'
-import { AuthContext } from '../providers/AuthProvider'
+import React, { useContext } from 'react'
+import { Box, Heading, Text } from 'rimble-ui'
 import { AppContext } from '../providers/AppProvider'
 import Loader from '../components/Loader'
 
 const Dashboard: React.FC<{}> = () => {
-  const history = useHistory()
-  const { messages, messagesLoading, user, ssiMode } = useContext(AppContext)
-
-  useEffect(() => {
-    if (!user && !ssiMode) {
-      history.replace('/')
-    }
-  }, [user, ssiMode])
+  const { messages, messagesLoading } = useContext(AppContext)
 
   return (
     <Box

@@ -220,6 +220,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   const logout = () => {
     clearSession()
     setUser(false)
+    setDefaultIdentity(null)
   }
 
   useEffect(() => {
@@ -232,7 +233,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     if (token || ssiMode) {
       getDefaultIdentity()
     }
-  }, [user])
+  }, [user, ssiMode])
 
   useEffect(() => {
     if (token) {
