@@ -39,6 +39,7 @@ export interface ProviderConfigs {
   root: string
   agent: string
   enabled: boolean
+  apiKey: string | null
 }
 
 export interface ExtensionRequest {

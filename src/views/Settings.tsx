@@ -14,10 +14,17 @@ const Settings: React.FC<{}> = () => {
   const [trustAgentEnabled] = useState(trustAgentConfig.enabled)
   const [SSIUrlValid, setSSIUrlValid] = useState(ssiConfig.enabled)
   const [checkingURL, setCheckingURL] = useState()
+  const [taVisible, setTaVisible] = useState(false)
+  const [apiKey, setApiKey] = useState(ssiConfig.apiKey)
 
   const saveSettings = () => {
     if (!checkingURL && SSIUrlValid) {
-      setSSIConfig({ root: ssiURL, agent: ssiAgentUrl, enabled: ssiEnabled })
+      setSSIConfig({
+        root: ssiURL,
+        agent: ssiAgentUrl,
+        enabled: ssiEnabled,
+        apiKey,
+      })
     }
   }
 
@@ -55,25 +62,40 @@ const Settings: React.FC<{}> = () => {
         <b>Settings</b>
       </Heading>
       <Box flex={1}>
-        <Heading as="h4">
+        <Heading as="h4" onClick={() => setTaVisible((v) => !v)}>
           <b>Trust Agency</b>
         </Heading>
-        <Flex marginBottom={10}>
-          <Input type={'text'} disabled width={280} value={trustAgentURL} />
-        </Flex>
-        <Checkbox label="Active" checked={trustAgentEnabled} disabled />
+        {taVisible && (
+          <>
+            <Flex marginBottom={10}>
+              <Input type={'text'} disabled width={280} value={trustAgentURL} />
+            </Flex>
+            <Checkbox label="Active" checked={trustAgentEnabled} disabled />
+          </>
+        )}
         <Heading as="h4">
           <b>SSI</b>
         </Heading>
         <Flex marginBottom={10}>
           <Input
             className={SSIUrlValid ? 'validated valid' : 'validated invalid'}
+            placeholder={'Enter agent URL'}
             type={'text'}
             value={ssiURL}
             width={280}
             onChange={(ev: any) => setSSIUrl(ev.target.value)}
           />
         </Flex>
+        <Flex marginBottom={10}>
+          <Input
+            type={'password'}
+            placeholder={'Enter agent API key'}
+            value={apiKey}
+            width={280}
+            onChange={(ev: any) => setApiKey(ev.target.value)}
+          />
+        </Flex>
+
         <Flex
           flexDirection={'row'}
           justifyContent={'space-between'}

@@ -11,12 +11,14 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     root: '',
     agent: '/agent',
     enabled: false,
+    apiKey: null,
   })
 
   const [trustAgentConfig, saveTrustAgentConfig] = useState({
     root: 'alpha.consensysidentity.com',
     agent: '/agent',
     enabled: true,
+    apiKey: null,
   })
 
   const setSSIConfig = (ssiConf: any) => {
