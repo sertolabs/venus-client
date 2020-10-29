@@ -149,7 +149,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
 
     if (ssiMode) {
       return await Daf.handleMessage(ENDPOINTS(ssiConfig).BASE_AGENT, jwt, {
-        token: ssiConfig.apiKey,
+        authorization: `Bearer ${ssiConfig.apiKey}`,
       })
     }
   }
