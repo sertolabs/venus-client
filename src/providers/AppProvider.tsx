@@ -71,6 +71,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       if (ssiMode) {
         const identities = await Daf.identityManagerGetIdentities(
           ENDPOINTS(ssiConfig).BASE_AGENT,
+          { authorization: `Bearer ${ssiConfig.apiKey}` },
         )
 
         if (identities.length > 0) {
@@ -102,6 +103,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
           subject: defaultIdentity.did,
           claims: { name },
         },
+        { authorization: `Bearer ${ssiConfig.apiKey}` },
       )
     }
   }
@@ -130,6 +132,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         {
           order: [{ column: 'issuanceDate', direction: 'DESC' }],
         },
+        { authorization: `Bearer ${ssiConfig.apiKey}` },
       )
     }
   }
@@ -145,7 +148,9 @@ const AppProvider: React.FC<{}> = ({ children }) => {
     }
 
     if (ssiMode) {
-      return await Daf.handleMessage(ENDPOINTS(ssiConfig).BASE_AGENT, jwt)
+      return await Daf.handleMessage(ENDPOINTS(ssiConfig).BASE_AGENT, jwt, {
+        token: ssiConfig.apiKey,
+      })
     }
   }
 
@@ -173,6 +178,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
         {
           // where: [{}]
         },
+        { authorization: `Bearer ${ssiConfig.apiKey}` },
       )
       if (messages) {
         setMessagesLoading(false)
@@ -195,6 +201,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       return await Daf.getVerifiableCredentialsForSdr(
         ENDPOINTS(ssiConfig).BASE_AGENT,
         sdr,
+        { authorization: `Bearer ${ssiConfig.apiKey}` },
       )
     }
   }
@@ -213,6 +220,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       return Daf.createVerifiablePresentation(
         ENDPOINTS(ssiConfig).BASE_AGENT,
         verifiablePresentation,
+        { authorization: `Bearer ${ssiConfig.apiKey}` },
       )
     }
   }

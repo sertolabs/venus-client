@@ -17,7 +17,7 @@ export const App: React.FC<{}> = ({}) => {
   const { ssiConfig, trustAgentConfig } = useContext(AuthContext)
   const { user, logout, ssiMode, defaultIdentity } = useContext(AppContext)
   const { request } = useContext(RequestContext)
-  const hasRequest = user && request
+  const hasRequest = (user && request) || (ssiMode && request)
 
   const PROD = (
     <>
