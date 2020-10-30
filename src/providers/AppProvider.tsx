@@ -183,6 +183,8 @@ const AppProvider: React.FC<{}> = ({ children }) => {
       if (messages) {
         setMessagesLoading(false)
         setMessages(messages)
+
+        console.log(messages)
       }
     }
   }
@@ -244,9 +246,7 @@ const AppProvider: React.FC<{}> = ({ children }) => {
   }, [user, ssiMode])
 
   useEffect(() => {
-    if (token) {
-      getMessages()
-    }
+    getMessages()
   }, [defaultIdentity, ssiMode])
 
   useEffect(() => {
