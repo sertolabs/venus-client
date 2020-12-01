@@ -1,4 +1,4 @@
-# Identity Extension Wallet
+# Venus Client
 
 _This project is in alpha and will change. We are working to adopt interop standards accross these APIs._
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "ConsenSys Identity Wallet",
-  "description": "A wallet extension for Trust Agency and SSI",
+  "name": "Venus client",
+  "description": "Venus client",
   "version": "1.0.0",
   "browser_action": {
     "default_icon": {
@@ -11,7 +11,7 @@
       "128": "icon-128.png",
       "512": "icon-512.png"
     },
-    "default_title": "Identity Wallet",
+    "default_title": "Venus client",
     "default_popup": "index.html"
   },
   "icons": {
